@@ -6,4 +6,8 @@ public class Clothing {
 	public Clothing(String name) {
 		clothingName = name;
 	}
+
+	public String getClothingName() {
+		return clothingName;
+	}
 }

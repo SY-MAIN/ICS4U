@@ -1,43 +1,59 @@
 import Donations.*;
+import java.util.ArrayList;
 
 public class User {
 	// Global variables
-	String name;
-	int age;
+	ArrayList<ArrayList<String>> donationLogs = new ArrayList<ArrayList<String>>();
+
+	// ID DonationItem Name Quantity
+	// 1 clothing pants 2
+
 	SaveScanner scan = new SaveScanner();
 
 	// User's donations
-	double amountOfWater;
-	double amountOfMoney;
-	FoodItem[] foodItems;
-	Clothing[] clothings;
-	Shelter[] shelters;
+	ArrayList<Clothing> clothings = new ArrayList<Clothing>();
 
 	// Constructor
 	public User() {
+	}
 
+	public void logTransactions(String dontaionID, String Name, int Quantity) {
 	}
 
 	// ==============================================================
 	// utility method for getting inputs from user
 	// ==============================================================
 
-	public void getAmountOfWater() {
-		String prompt = "Enter the amount of water in litres do you want to donate: ";
-		amountOfWater = scan.nextDouble(prompt, true);
-	}
-
-	public void getAmountOfMoney() {
-		String prompt = "Enter the amount of money in dollars do you want to donate: ";
-		amountOfMoney = scan.nextDouble(prompt, true);
-	}
-
-	public void getFoodItems() {
-		System.out.println("Enter the foods in order: ");
-		int foodCounter = 0;
+	public void getClothing() {
+		System.out.println("Enter the clothings in order(Enter exit to exit): ");
+		int clothingCounter = 1;
 		while (true) {
-			System.out.print("Food Item #" + foodCounter + ": ");
-			String foodItem = scan.nextLine("", false);
+			System.out.print("clothes Item #" + clothingCounter++ + ": ");
+			String item = scan.nextLine("", false).toLowerCase();
+
+			if (item.equals("exit")) {
+				break;
+			}
+
+			// Create Food object
+			Clothing itemObj = new Clothing(item);
+			// Save to the array of food items
+			clothings.add(itemObj);
 		}
+	}
+
+	// temp
+	public void displayClothing() {
+		for (int i = 0; i < clothings.size(); i++) {
+			System.out.println(clothings.get(i).getClothingName());
+		}
+	}
+
+	// ==============================================================
+	// utility method
+	// ==============================================================
+
+	public void CalClothingPerPerson() {
+
 	}
 }
