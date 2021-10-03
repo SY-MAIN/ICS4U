@@ -52,4 +52,5 @@ public class SaveScanner {
   public void closeScan() {
     scan.close();
   }
+
 }

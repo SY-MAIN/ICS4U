@@ -1,4 +1,3 @@
-import Donations.*;
 import java.util.ArrayList;
 
 public class User {
@@ -11,13 +10,10 @@ public class User {
 	SaveScanner scan = new SaveScanner();
 
 	// User's donations
-	ArrayList<Clothing> clothings = new ArrayList<Clothing>();
+	int amountOfClothing = 0;
+	int amountOfCalories = 0;
 
-	// Constructor
-	public User() {
-	}
-
-	public void logTransactions(String dontaionID, String Name, int Quantity) {
+	public void logTransactions(String donationID, String Name, int Quantity) {
 	}
 
 	// ==============================================================
@@ -25,35 +21,21 @@ public class User {
 	// ==============================================================
 
 	public void getClothing() {
-		System.out.println("Enter the clothings in order(Enter exit to exit): ");
-		int clothingCounter = 1;
-		while (true) {
-			System.out.print("clothes Item #" + clothingCounter++ + ": ");
-			String item = scan.nextLine("", false).toLowerCase();
-
-			if (item.equals("exit")) {
-				break;
-			}
-
-			// Create Food object
-			Clothing itemObj = new Clothing(item);
-			// Save to the array of food items
-			clothings.add(itemObj);
-		}
-	}
-
-	// temp
-	public void displayClothing() {
-		for (int i = 0; i < clothings.size(); i++) {
-			System.out.println(clothings.get(i).getClothingName());
-		}
+		System.out.println("Enter the amount of clothings you want to donate: ");
+		amountOfClothing = scan.nextInt("", false);
 	}
 
 	// ==============================================================
 	// utility method
 	// ==============================================================
 
-	public void CalClothingPerPerson() {
+	public int calClothingPerPerson() {
+		// Assuming one person requires two pieces of clothings
+		return Math.floorDiv(amountOfClothing, 2);
+	}
 
+	public int calFoodPerChild() {
+		int numCalPerChild = 2000;
+		return amountOfCalories / numCalPerChild;
 	}
 }
