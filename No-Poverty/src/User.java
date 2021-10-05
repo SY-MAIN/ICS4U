@@ -10,8 +10,10 @@ public class User {
 	SaveScanner scan = new SaveScanner();
 
 	// User's donations
-	int amountOfClothing = 0;
-	int amountOfCalories = 0;
+	int amountOfPants = 0;
+	int amountOfShirt = 0;
+	double amountOfMoney = 0;
+	double amountOfCalories = 0;
 
 	public void logTransactions(String donationID, String Name, int Quantity) {
 	}
@@ -21,21 +23,56 @@ public class User {
 	// ==============================================================
 
 	public void getClothing() {
-		System.out.println("Enter the amount of clothings you want to donate: ");
-		amountOfClothing = scan.nextInt("", false);
+		System.out.println("Enter the clothings you want to donate(Enter exit to exit) ");
+
+		while (true) {
+			System.out.print("Name -> ");
+			String clothingName = scan.nextLine("", false).toLowerCase();
+
+			if (clothingName.equals("exit")) {
+				break;
+			}
+
+			System.out.print("Type(shirt or pants) -> ");
+			String clothingType = scan.nextLine("", false);
+			if (clothingType.equals("shirt") || clothingType.equals("pants")) {
+				if (clothingType.equals("pants")) {
+					amountOfPants++;
+				} else if (clothingType.equals("shirt")) {
+					amountOfShirt++;
+				}
+			} else {
+				System.out.print("Invalid Option! Please check your spelling!");
+			}
+		}
+	}
+
+	public void getFood() {
+		System.out.println("Enter the foods you want to donate(Enter exit to exit) ");
+
+		while (true) {
+			System.out.print("Name -> ");
+			String foodName = scan.nextLine("", false).toLowerCase();
+
+			if (foodName.equals("exit")) {
+				break;
+			}
+
+			System.out.print("Calories -> ");
+			amountOfCalories += scan.nextDouble("", false);
+			scan.nextLine("", false);
+		}
+	}
+
+	public void getMoney() {
+		String prompt = "Enter the amount of money you want to donate:";
+
+		amountOfMoney = scan.nextDouble(prompt, true);
+		scan.nextLine("", false);
+
 	}
 
 	// ==============================================================
 	// utility method
 	// ==============================================================
-
-	public int calClothingPerPerson() {
-		// Assuming one person requires two pieces of clothings
-		return Math.floorDiv(amountOfClothing, 2);
-	}
-
-	public int calFoodPerChild() {
-		int numCalPerChild = 2000;
-		return amountOfCalories / numCalPerChild;
-	}
 }
