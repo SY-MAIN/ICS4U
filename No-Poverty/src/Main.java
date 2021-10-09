@@ -7,9 +7,9 @@ class Main {
 		User user = new User();
 
 		Game game = new Game();
-		boolean running = true;
 		introduction();
 		donateScreen(user);
+		game.run();
 
 		System.out.println("Thank for using this program.");
 		scan.closeScan();
@@ -22,7 +22,13 @@ class Main {
 		System.out.println("Welcome to the game of donation!!\n");
 		System.out.println("This game is designed to help you understand the importance of your donations.");
 		System.out.println("How to play: ");
-		System.out.println("By donating!!! The more you donate, the faster you will win the same.");
+		System.out.println("By donating!!! The more you donate, the more likely you will win.");
+		System.out.println("How the game works: ");
+		System.out.println("The game is played on a 10 by 10 board and you are in the shoes of someone in poverty.");
+		System.out.println(
+				"Your main objective is to take over as many \"territory\" as possible before the other players take over.");
+		System.out.println("One major rule is you cannot take over other players territory.");
+		System.out.println("By donating, you will have a high chance of surviving and winning");
 		System.out.println("\n");
 		enterToContinue();
 		clearScreen();
@@ -148,10 +154,3 @@ class Main {
 		}
 	}
 }
-
-// Take in inputs from the user Donations include
-// - water -> in litres
-// - food -> in different types of food -> calorie
-// - money -> dollars
-// - clothing -> pieces of clothing
-// - shelters -> in square meter(square feet)

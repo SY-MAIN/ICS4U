@@ -30,4 +30,9 @@ public class Player {
     return this.status;
   }
 
+  public int calTime() {
+    // return the mutationRate in milliseconds
+    return (int) (1 / this.mutationRate) * 1000;
+  }
+
 }
