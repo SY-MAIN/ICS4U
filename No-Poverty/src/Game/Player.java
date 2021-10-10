@@ -38,4 +38,9 @@ public class Player {
     return (int) (1 / this.mutationRate) * 1000;
   }
 
+  public void donationModification(int amountSaved) {
+    // Plus 0.1 for every 10 person saved / helped
+
+    mutationRate += (amountSaved / 10) * 0.1;
+  }
 }

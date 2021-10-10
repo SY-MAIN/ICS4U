@@ -8,12 +8,11 @@ public class Game {
 
   Player players[] = new Player[4];
 
-  public Game() {
-    this.init();
+  public Game(int amountSaved) {
+    this.init(amountSaved);
   }
 
-  private void init() {
-    System.out.println("Quack");
+  private void init(int amountSaved) {
     // Init Board
 
     for (int i = 0; i < this.numPerRow; i++) {
@@ -44,6 +43,9 @@ public class Game {
     int randInt = randomInt(1, 3);
 
     players[randInt].StatusChange();
+
+    // Modify the user's mutationRate base on their donation
+    players[0].donationModification(amountSaved);
 
   }
 
