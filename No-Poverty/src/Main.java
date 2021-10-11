@@ -1,7 +1,9 @@
 import Game.Game;
 
 class Main {
+	// ================================================
 	// Global variables
+	// ================================================
 	// Create a global scanner to read in inputs from the user. By having a global
 	// scanner, we can also close the scan in case of memory leak.
 	static SaveScanner scan = new SaveScanner(); // custom scanner
