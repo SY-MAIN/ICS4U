@@ -1,19 +1,26 @@
-import java.util.ArrayList;
+import java.util.*;
+import java.lang.String;
 
 public class User {
 	// Global variables
-	ArrayList<ArrayList<String>> donationLogs = new ArrayList<ArrayList<String>>();
 
-	// ID DonationItem Name Quantity
-	// 1 clothing pants 2
+	// To store all the information about the donations the user made,
+	ArrayList<String> donationStatusLog = new ArrayList<String>();
 
 	SaveScanner scan = new SaveScanner();
+
+	// font colors
+	public static final String ANSI_GREEN = "\u001B[32m";
+	public static final String ANSI_WHITE = "\u001B[37m";
+	public static final String ANSI_BLUE = "\u001B[34m";
 
 	// User's donations
 	int amountOfPants = 0;
 	int amountOfShirt = 0;
-	double amountOfMoney = 0;
-	double amountOfCalories = 0;
+	int amountOfFood = 0;
+
+	double amountOfCalories = 0.0;
+	double amountOfMoney = 0.0;
 
 	public void logTransactions(String donationID, String Name, int Quantity) {
 	}
@@ -42,7 +49,7 @@ public class User {
 					amountOfShirt++;
 				}
 			} else {
-				System.out.print("Invalid Option! Please check your spelling!");
+				System.out.println("Invalid Option! Please check your spelling!");
 			}
 		}
 	}
@@ -60,6 +67,7 @@ public class User {
 
 			System.out.print("Calories -> ");
 			amountOfCalories += scan.nextDouble("", false);
+			this.amountOfFood++;
 			scan.nextLine("", false);
 		}
 	}
@@ -75,12 +83,20 @@ public class User {
 	private int calNumHelpClothes() {
 		// Assuming every person is saved/helped from some harsh environment if they
 		// have at least one pant, and one shirt.
+		int amountOfPeopleHelped = 0;
 
 		if (this.amountOfPants >= this.amountOfShirt) {
-			return this.amountOfShirt;
+			amountOfPeopleHelped = this.amountOfShirt;
 		} else {
-			return this.amountOfPants;
+			amountOfPeopleHelped = this.amountOfPants;
 		}
+
+		String logMessage = "With " + ANSI_BLUE + (int) (this.amountOfPants + this.amountOfShirt) + ANSI_WHITE
+				+ " different pieces of clothing donated, we can supply about " + ANSI_BLUE + amountOfPeopleHelped + ANSI_WHITE
+				+ " individuals with clothing to survive the harsh environments. ";
+		this.donationStatusLog.add(logMessage);
+
+		return amountOfPeopleHelped;
 	}
 
 	private int calNumHelpFood() {
@@ -89,6 +105,10 @@ public class User {
 
 		int minimumCal = 2400;
 		int amountOfPeopleHelped = (int) (this.amountOfCalories / minimumCal);
+		String logMessage = "With " + ANSI_BLUE + this.amountOfFood + ANSI_WHITE
+				+ " different types of food donated, we can supply about " + ANSI_BLUE + amountOfPeopleHelped + ANSI_WHITE
+				+ " individuals with food to survive from starvation.";
+		this.donationStatusLog.add(logMessage);
 		return amountOfPeopleHelped;
 	}
 
@@ -113,13 +133,50 @@ public class User {
 		int helpChildren_saveWater = (int) (this.amountOfMoney / amount_safeWater) * amountSaved_safeWater;
 
 		// return the average children saved
-		int averageSaved = (helpChildren_nutritiousFood + helpChildren_vaccine + helpChildren_saveWater) / 3;
+		int amountOfPeopleHelped = (helpChildren_nutritiousFood + helpChildren_vaccine + helpChildren_saveWater) / 3;
 
-		return averageSaved;
+		String logMessage = "With " + ANSI_GREEN + "$" + this.formatMoney(this.amountOfMoney) + ANSI_WHITE
+				+ ", we can supply " + ANSI_BLUE + helpChildren_nutritiousFood + ANSI_WHITE
+				+ " children with nutritious foods.";
+		this.donationStatusLog.add(logMessage);
+
+		logMessage = "With " + ANSI_GREEN + "$" + this.formatMoney(this.amountOfMoney) + ANSI_WHITE + ", we can supply "
+				+ ANSI_BLUE + helpChildren_vaccine + ANSI_WHITE + " children with life-saving vaccines.";
+		this.donationStatusLog.add(logMessage);
+
+		logMessage = "With " + ANSI_GREEN + "$" + this.formatMoney(this.amountOfMoney) + ANSI_WHITE + ", we can supply "
+				+ ANSI_BLUE + helpChildren_saveWater + ANSI_WHITE + " children with safe water.";
+		this.donationStatusLog.add(logMessage);
+
+		return amountOfPeopleHelped;
 	}
 
 	public int getAmountSaved() {
 		return this.calNumHelpClothes() + this.calNumHelpFood() + this.calNumHelpMoney();
 	}
 
+	public void displayDonationLogs() {
+		for (int i = 0; i < this.donationStatusLog.size(); i++) {
+			System.out.println(this.donationStatusLog.get(i));
+		}
+	}
+
+	// ====================================
+	// Methods for formatting different Strings
+	// ====================================
+
+	private String formatMoney(double amt) {
+		// Convert the amount to proper money format. For example $40.00
+		String amount = Double.toString(amt);
+		String[] strArray = amount.split("\\.");
+
+		if (strArray[1].length() == 2) {
+			return strArray[0] + "." + strArray[1];
+		} else if (strArray[1].length() == 1) {
+			return strArray[0] + "." + strArray[1] + "0";
+		} else if (strArray[1].length() == 0) {
+			return strArray[0] + ".00";
+		}
+		return amount;
+	}
 }
