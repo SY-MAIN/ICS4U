@@ -67,4 +67,8 @@ public class SaveScanner {
     input = scan.nextLine();
     return input;
   }
+
+  public void closeScan() {
+    scan.close();
+  }
 }
