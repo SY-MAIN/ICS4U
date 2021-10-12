@@ -209,7 +209,7 @@ public class Game {
     int numVisited = 0;
 
     // Loop through the entire board and find the corresponding id
-    // Then check whether up, right, bottom, left is an blank space.
+    // Then check whether up, right, bottom, left is a blank space.
     for (int i = 0; i < this.numPerRow; i++) {
       for (int j = 0; j < this.numPerRow; j++) {
         char currentId = this.board[i][j];
@@ -236,7 +236,7 @@ public class Game {
             if (newX < 0 || newX >= this.numPerRow || newY < 0 || newY >= this.numPerRow)
               continue;
 
-            // Check if the new position is an blank space.
+            // Check if the new position is a blank space.
             if (this.board[newY][newX] == '_') {
               // Set the new position to the player id.
               this.board[newY][newX] = player.ID;
@@ -255,7 +255,7 @@ public class Game {
   // ================================================
   public static void clearScreen() {
     // ================================================
-    // An method to clear the console
+    // A method to clear the console
     // ================================================
     System.out.print("\033[H\033[2J");
     System.out.flush();
@@ -263,7 +263,7 @@ public class Game {
 
   public static void wait(int ms) {
     // ================================================
-    // An method to wait in milliseconds
+    // A method to wait in milliseconds
     // ================================================
     try {
       Thread.sleep(ms);
@@ -274,7 +274,7 @@ public class Game {
 
   public static int randomInt(int min, int max) {
     // ================================================
-    // An method to generate a random number
+    // A method to generate a random number
     // ================================================
     Random randObj = new Random();
     /*

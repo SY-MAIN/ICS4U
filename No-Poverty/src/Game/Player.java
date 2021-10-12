@@ -56,7 +56,7 @@ public class Player {
 
   public void donationModification(int amountSaved) {
     // ================================================
-    // An method to modify the mutation base on the donation of the user.
+    // A method to modify the mutation base on the donation of the user.
     // ================================================
     // Plus 0.1 for every 10 person saved / helped
 

@@ -195,14 +195,14 @@ public class User {
 
 	public int getAmountSaved() {
 		// ================================================
-		// An method to get the total amount of people helped
+		// A method to get the total amount of people helped
 		// ================================================
 		return this.calNumHelpClothes() + this.calNumHelpFood() + this.calNumHelpMoney();
 	}
 
 	public void displayDonationLogs() {
 		// ================================================
-		// An method to display all the donation messages
+		// A method to display all the donation messages
 		// ================================================
 		for (int i = 0; i < this.donationStatusLog.size(); i++) {
 			System.out.println(this.donationStatusLog.get(i));

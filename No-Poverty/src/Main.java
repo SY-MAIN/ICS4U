@@ -65,7 +65,7 @@ class Main {
 
 	public static void donateScreen(User user) {
 		// ================================================
-		// An donation screen showing all the options available for donation. Once
+		// A donation screen showing all the options available for donation. Once
 		// selected, the user will be prompt for further information.
 		// ================================================
 		// Donation prompts
@@ -108,7 +108,7 @@ class Main {
 
 	public static void enterToContinue() {
 		// ================================================
-		// An method to wait for user to enter anything
+		// A method to wait for user to enter anything
 		// ================================================
 		String prompt = "Enter anything to continue...";
 		scan.nextLine(prompt, true);
@@ -116,7 +116,7 @@ class Main {
 
 	public static void clearScreen() {
 		// ================================================
-		// An method to clear the console
+		// A method to clear the console
 		// ================================================
 		System.out.print("\033[H\033[2J");
 		System.out.flush();
@@ -124,7 +124,7 @@ class Main {
 
 	public static void wait(int ms) {
 		// ================================================
-		// An method to wait in milliseconds
+		// A method to wait in milliseconds
 		// ================================================
 		try {
 			Thread.sleep(ms);

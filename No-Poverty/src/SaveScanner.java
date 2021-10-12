@@ -22,7 +22,7 @@ public class SaveScanner {
       intInput = scan.nextInt();
 
     } catch (InputMismatchException e) {
-      // Display an warning.
+      // Display a warning.
       System.out.println("Must be a number!");
       // call the method itself to continue getting inputs.
       return nextInt(prompt, log);
@@ -41,13 +41,13 @@ public class SaveScanner {
     }
 
     // Try getting inputs from the user. If the user tries to enter anything other
-    // than an double, then the program will display a warning.
+    // than a double, then the program will display a warning.
     try {
       // Get the inputs from the user.
       doubleInput = scan.nextDouble();
 
     } catch (InputMismatchException e) {
-      // Display an warning.
+      // Display a warning.
       System.out.println("Must be a number!");
       // call the method itself to continue getting inputs.
       return nextDouble(prompt, log);
