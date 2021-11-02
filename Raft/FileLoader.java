@@ -24,6 +24,7 @@ public class FileLoader {
         for (int j = 0; j < args[i].length; j++) {
           writer.write(args[i][j]);
         }
+        writer.write("\n");
       }
       System.err.println("File Saved");
       writer.close();
@@ -47,5 +48,19 @@ public class FileLoader {
       System.err.println("Java Exception: " + e);
     }
     return output;
+  }
+
+  // ================================================
+  // Helper methods
+  // ================================================
+
+  public static void removeFile(File file) {
+    if (file.exists()) {
+      file.delete();
+      System.out.println("ADMIN: File Deleted");
+    } else {
+
+      System.out.println("ADMIN: File NOT FOUND");
+    }
   }
 }
