@@ -1,5 +1,7 @@
 import java.io.File;
 
+import Game.Game;
+
 /*
 File Name: Raft 
 By: Simon Yang
@@ -14,12 +16,15 @@ class Main {
     String option[] = { "(1)New Game", "(2)Continue", "(3)Save", "(4)Exit" };
     int result = Render.menuScreen(option);
 
+    Game game = new Game();
+
     switch (result) {
     case 1:
       // FileLoader.removeFile(new File("SaveFile.txt"));
       /*
        * Delete any save file, Render new game,
        */
+      game.main();
       break;
     case 2:
       /*

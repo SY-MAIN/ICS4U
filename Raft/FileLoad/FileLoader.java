@@ -1,3 +1,5 @@
+package FileLoad;
+
 import java.util.Scanner;
 import java.io.File;
 import java.io.IOException;
@@ -59,7 +61,6 @@ public class FileLoader {
       file.delete();
       System.out.println("ADMIN: File Deleted");
     } else {
-
       System.out.println("ADMIN: File NOT FOUND");
     }
   }

@@ -1,16 +1,6 @@
-import java.io.File;
+import ASCII_ART.Loader;
 
 public class Render {
-  public static File ArtDir = new File("./ASCII_ART");
-  public static int WIDTH = 70;
-  public static int HEIGHT = 20;
-
-  public static void displayScreen(String fileName) {
-
-    File newFile = new File(ArtDir, fileName);
-
-    System.out.println(FileLoader.readFile(newFile));
-  }
 
   public static void displayCenterText(String items[], int totalWidth) {
     System.out.println();
@@ -38,7 +28,7 @@ public class Render {
   }
 
   public static int menuScreen(String option[]) {
-    Render.displayCenterText(option, WIDTH);
+    Render.displayCenterText(option, Loader.WIDTH);
 
     return SaveScanner.nextInt("", false);
   }
