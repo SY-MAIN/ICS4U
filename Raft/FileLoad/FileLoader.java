@@ -9,9 +9,8 @@ public class FileLoader {
   public static void WriteToFile(File file, String[] args) {
     try {
       FileWriter writer = new FileWriter(file, true);
-      for (int i = 0; i < args.length; i++) {
-        writer.write(args[i]);
-      }
+      for (int i = 0; i < args.length; i++)
+        writer.write(args[i] + ",");
       System.out.println("File Saved");
       writer.close();
     } catch (IOException e) {
@@ -24,7 +23,7 @@ public class FileLoader {
       FileWriter writer = new FileWriter(file);
       for (int i = 0; i < args.length; i++) {
         for (int j = 0; j < args[i].length; j++) {
-          writer.write(args[i][j]);
+          writer.write(args[i][j] + ",");
         }
         writer.write("\n");
       }

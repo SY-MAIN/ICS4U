@@ -25,6 +25,7 @@ class Main {
        * Delete any save file, Render new game,
        */
       game.main();
+
       break;
     case 2:
       /*
