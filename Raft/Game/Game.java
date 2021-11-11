@@ -8,13 +8,13 @@ import java.io.IOException;
 
 public class Game {
 
-  private static String FishOnLine = "FishOnLine";
-  private static String Idle = "Idle";
-  private static String IdleFishing = "IdleFishing";
+  private static File Idle = Loader.returnFile("Idle");
+  private static File FishOnLine = Loader.returnFile("FishOnLine");
+  private static File IdleFishing = Loader.returnFile("IdleFishing");
 
-  private HashMap<String, Integer> stats = new HashMap<String, Integer>();
+  private static HashMap<String, Integer> stats = new HashMap<String, Integer>();
 
-  public Scanner scan = new Scanner(System.in);
+  public static Scanner scan = new Scanner(System.in);
 
   public static final String ANSI_RESET = "\u001B[0m";
   public static final String ANSI_BLACK = "\u001B[30m";
@@ -37,12 +37,13 @@ public class Game {
 
   public void main() {
 
-    String currentScreen = Idle;
+    File currentScreen = Idle;
 
     // Update per Turn
     while (true) {
-      File out = this.parseFile(currentScreen);
-      System.out.println(formateOutput(out));
+      parseFile(currentScreen);
+
+      displayScreen(currentScreen);
       String inp = scan.nextLine().toUpperCase();
 
       switch (inp) {
@@ -51,7 +52,7 @@ public class Game {
       case "I":
         break;
       case "F":
-        this.fish();
+        fish();
         break;
       case "E":
         return;
@@ -59,10 +60,9 @@ public class Game {
     }
   }
 
-  public File parseFile(String fileName) {
-    // Parse the file and access mainly the stats; Health, Hungry, and hydration
+  private static File parseFile(File file) {
+    // Parse the file and access mainly the stats; Health, Hunger, and hydration
     // using the special char '{' and '}'
-    File file = Loader.returnFile(fileName);
 
     // Read file and convert into an array
     String output = FileLoader.readFile(file);
@@ -71,25 +71,25 @@ public class Game {
     for (int i = 0; i < out.length; i++) {
       if (out[i].equals("Health:")) {
         if (stats.containsKey("Health")) {
-          stats.replace("Health", Integer.parseInt(this.formatStat(out[i + 1])));
+          stats.replace("Health", Integer.parseInt(formatStat(out[i + 1])));
         } else {
-          stats.put("Health", Integer.parseInt(this.formatStat(out[i + 1])));
+          stats.put("Health", Integer.parseInt(formatStat(out[i + 1])));
         }
       }
 
-      if (out[i].equals("Hungry:")) {
-        if (stats.containsKey("Hungry")) {
-          stats.replace("Hungry", Integer.parseInt(this.formatStat(out[i + 1])));
+      if (out[i].equals("Hunger:")) {
+        if (stats.containsKey("Hunger")) {
+          stats.replace("Hunger", Integer.parseInt(formatStat(out[i + 1])));
         } else {
-          stats.put("Hungry", Integer.parseInt(this.formatStat(out[i + 1])));
+          stats.put("Hunger", Integer.parseInt(formatStat(out[i + 1])));
         }
       }
 
       if (out[i].equals("Hydration:")) {
         if (stats.containsKey("Hydration")) {
-          stats.replace("Hydration", Integer.parseInt(this.formatStat(out[i + 1])));
+          stats.replace("Hydration", Integer.parseInt(formatStat(out[i + 1])));
         } else {
-          stats.put("Hydration", Integer.parseInt(this.formatStat(out[i + 1])));
+          stats.put("Hydration", Integer.parseInt(formatStat(out[i + 1])));
         }
       }
     }
@@ -97,12 +97,12 @@ public class Game {
     return file;
   }
 
-  public String formateOutput(File file) {
+  private static String formateOutput(File file) {
     // Change stats
     // Change colors
 
     String healthColor = ANSI_BRIGHT_RED;
-    String hungryColor = ANSI_RED;
+    String HungerColor = ANSI_RED;
     String hydrationColor = ANSI_BLUE;
     String output = "";
 
@@ -117,19 +117,19 @@ public class Game {
         if (line.contains("Health")) {
           int closingIndex = line.indexOf("}");
           int healthIndex = line.indexOf("Health: {");
-          output += line.substring(0, healthIndex) + healthColor + "Health: " + this.stats.get("Health").toString()
+          output += line.substring(0, healthIndex) + healthColor + "Health: " + stats.get("Health").toString()
               + ANSI_RESET + "  " + line.substring(closingIndex + 1);
           System.out.println(line.substring(closingIndex + 1));
-        } else if (line.contains("Hungry")) {
+        } else if (line.contains("Hunger")) {
           int closingIndex = line.indexOf("}");
-          int hungryIndex = line.indexOf("Hungry: {");
-          output += line.substring(0, hungryIndex) + hungryColor + "Hungry: " + this.stats.get("Hungry").toString()
+          int HungerIndex = line.indexOf("Hunger: {");
+          output += line.substring(0, HungerIndex) + HungerColor + "Hunger: " + stats.get("Hunger").toString()
               + ANSI_RESET + "  " + line.substring(closingIndex + 1);
         } else if (line.contains("Hydration")) {
           int closingIndex = line.indexOf("}");
           int hydrationIndex = line.indexOf("Hydration: {");
           output += line.substring(0, hydrationIndex) + hydrationColor + "Hydration: "
-              + this.stats.get("Hydration").toString() + ANSI_RESET + "  " + line.substring(closingIndex + 1);
+              + stats.get("Hydration").toString() + ANSI_RESET + "  " + line.substring(closingIndex + 1);
         } else {
           output += line;
         }
@@ -143,20 +143,87 @@ public class Game {
     return output;
   }
 
-  public void update() {
+  private static void update() {
 
   }
 
-  public void fish() {
+  private static void fish() {
+    // Random number between 3-5 seconds
+    int randint = randomInt(3, 6);
+    displayScreen(IdleFishing);
 
+    for (int i = 0; i < randint; i++) {
+      if (i == 1) {
+        System.out.println(
+            "You cast the hook into the water with both hands at the same time. Soon only a segment of float is above the water.\n");
+      } else if (i == randint - 2) {
+        System.out.println(
+            "The float is swaying slightly, is it the blowing wind or the tentative fish? Just be patient and wait for a while.\n");
+      }
+      wait(1000);
+    }
+    System.out.println("The float is shaking continuously and water is rippling. A fish bit!");
+    displayScreen(FishOnLine);
+
+    String item = "Fish";
+    System.out.println("Enter R to reel it in");
+    scan.nextLine();
+
+    wait(1000);
+    System.out.println("You are lucky enough to fish up a " + item);
+    wait(2000);
   }
 
-  private String formatStat(String out) {
+  private static String formatStat(String out) {
     // remove {} from out
     // i.e. {100} -> 100
     String a = out.substring(1, out.length() - 1);
     System.out.println(a);
     return a;
+  }
+
+  private static void displayScreen(File screen) {
+    System.out.println(formateOutput(screen));
+  }
+
+  private static long getTime() {
+    return System.currentTimeMillis();
+  }
+
+  private static long toMillis(int seconds) {
+    return seconds * 1000;
+  }
+
+  public static int randomInt(int min, int max) {
+    // ================================================
+    // A method to generate a random number
+    // ================================================
+    Random randObj = new Random();
+    /*
+     * Due to the built-in method, it will always return a random number between 0
+     * and a number. By adding the min value, and altering the parameter value, we
+     * can offset the random number by the min value. For example, if you want a
+     * random number between 10 and 20 inclusive, we can offset the value by adding
+     * the min value to the random value. To account for the addition of the min
+     * value, we will subtract the min value from the max value.
+     */
+    return randObj.nextInt(max - min) + min;
+  }
+
+  public static void wait(int ms) {
+    try {
+      Thread.sleep(ms);
+    } catch (InterruptedException ex) {
+      Thread.currentThread().interrupt();
+    }
+  }
+
+  public static void clearScreen() {
+    // ================================================
+    // A method to clear the console
+    // ================================================
+    System.out.print("\033[H\033[2J");
+    System.out.flush();
   }
 }
 
