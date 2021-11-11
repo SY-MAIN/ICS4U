@@ -12,9 +12,8 @@ public class Game {
   private static File FishOnLine = Loader.returnFile("FishOnLine");
   private static File IdleFishing = Loader.returnFile("IdleFishing");
 
-  private static HashMap<String, Integer> stats = new HashMap<String, Integer>();
-
   public static Scanner scan = new Scanner(System.in);
+  public static Player player;
 
   public static final String ANSI_RESET = "\u001B[0m";
   public static final String ANSI_BLACK = "\u001B[30m";
@@ -39,8 +38,12 @@ public class Game {
 
     File currentScreen = Idle;
 
+    // Create new player
+    player = new Player();
+
     // Update per Turn
     while (true) {
+      clearScreen();
       parseFile(currentScreen);
 
       displayScreen(currentScreen);
@@ -70,26 +73,26 @@ public class Game {
 
     for (int i = 0; i < out.length; i++) {
       if (out[i].equals("Health:")) {
-        if (stats.containsKey("Health")) {
-          stats.replace("Health", Integer.parseInt(formatStat(out[i + 1])));
+        if (player.stats.containsKey("Health")) {
+          player.stats.replace("Health", Integer.parseInt(formatStat(out[i + 1])));
         } else {
-          stats.put("Health", Integer.parseInt(formatStat(out[i + 1])));
+          player.stats.put("Health", Integer.parseInt(formatStat(out[i + 1])));
         }
       }
 
       if (out[i].equals("Hunger:")) {
-        if (stats.containsKey("Hunger")) {
-          stats.replace("Hunger", Integer.parseInt(formatStat(out[i + 1])));
+        if (player.stats.containsKey("Hunger")) {
+          player.stats.replace("Hunger", Integer.parseInt(formatStat(out[i + 1])));
         } else {
-          stats.put("Hunger", Integer.parseInt(formatStat(out[i + 1])));
+          player.stats.put("Hunger", Integer.parseInt(formatStat(out[i + 1])));
         }
       }
 
       if (out[i].equals("Hydration:")) {
-        if (stats.containsKey("Hydration")) {
-          stats.replace("Hydration", Integer.parseInt(formatStat(out[i + 1])));
+        if (player.stats.containsKey("Hydration")) {
+          player.stats.replace("Hydration", Integer.parseInt(formatStat(out[i + 1])));
         } else {
-          stats.put("Hydration", Integer.parseInt(formatStat(out[i + 1])));
+          player.stats.put("Hydration", Integer.parseInt(formatStat(out[i + 1])));
         }
       }
     }
@@ -117,19 +120,18 @@ public class Game {
         if (line.contains("Health")) {
           int closingIndex = line.indexOf("}");
           int healthIndex = line.indexOf("Health: {");
-          output += line.substring(0, healthIndex) + healthColor + "Health: " + stats.get("Health").toString()
+          output += line.substring(0, healthIndex) + healthColor + "Health: " + player.stats.get("Health").toString()
               + ANSI_RESET + "  " + line.substring(closingIndex + 1);
-          System.out.println(line.substring(closingIndex + 1));
         } else if (line.contains("Hunger")) {
           int closingIndex = line.indexOf("}");
           int HungerIndex = line.indexOf("Hunger: {");
-          output += line.substring(0, HungerIndex) + HungerColor + "Hunger: " + stats.get("Hunger").toString()
+          output += line.substring(0, HungerIndex) + HungerColor + "Hunger: " + player.stats.get("Hunger").toString()
               + ANSI_RESET + "  " + line.substring(closingIndex + 1);
         } else if (line.contains("Hydration")) {
           int closingIndex = line.indexOf("}");
           int hydrationIndex = line.indexOf("Hydration: {");
           output += line.substring(0, hydrationIndex) + hydrationColor + "Hydration: "
-              + stats.get("Hydration").toString() + ANSI_RESET + "  " + line.substring(closingIndex + 1);
+              + player.stats.get("Hydration").toString() + ANSI_RESET + "  " + line.substring(closingIndex + 1);
         } else {
           output += line;
         }
@@ -141,10 +143,6 @@ public class Game {
       System.err.println("Java Exception: " + e);
     }
     return output;
-  }
-
-  private static void update() {
-
   }
 
   private static void fish() {
@@ -183,7 +181,7 @@ public class Game {
   }
 
   private static void displayScreen(File screen) {
-    System.out.println(formateOutput(screen));
+    System.out.print(formateOutput(screen));
   }
 
   private static long getTime() {
