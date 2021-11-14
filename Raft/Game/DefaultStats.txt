@@ -1,0 +1,2 @@
+Health, Hunger, Hydration
+10, 100, 0

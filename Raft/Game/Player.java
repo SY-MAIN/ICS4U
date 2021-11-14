@@ -5,7 +5,7 @@ import java.util.*;
 public class Player {
   private String name;
   private int turn = 0;
-  public static HashMap<String, Integer> stats = new HashMap<String, Integer>(); // Health, Hunger, Hydration
+  public HashMap<String, Integer> stats = new HashMap<String, Integer>(); // Health, Hunger, Hydration
 
   private int hungerPerTurn = 20; // Lose 20 hunger for each turn
   private int hydrationTurn = 15; // Gain 25 hydration for each turn

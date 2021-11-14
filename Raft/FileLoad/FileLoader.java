@@ -8,7 +8,7 @@ import java.io.FileWriter;
 public class FileLoader {
   public static void WriteToFile(File file, String[] args) {
     try {
-      FileWriter writer = new FileWriter(file, true);
+      FileWriter writer = new FileWriter(file);
       for (int i = 0; i < args.length; i++)
         writer.write(args[i] + ",");
       System.out.println("File Saved");

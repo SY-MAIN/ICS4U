@@ -12,8 +12,9 @@ public class Game {
   private static File FishOnLine = Loader.returnFile("FishOnLine");
   private static File IdleFishing = Loader.returnFile("IdleFishing");
 
-  public static Scanner scan = new Scanner(System.in);
-  public static Player player;
+  private static Scanner scan = new Scanner(System.in);
+  private static Player player;
+  private static HashMap<String, Item> items = new HashMap<String, Item>();
 
   public static final String ANSI_RESET = "\u001B[0m";
   public static final String ANSI_BLACK = "\u001B[30m";
@@ -44,60 +45,76 @@ public class Game {
     // Update per Turn
     while (true) {
       clearScreen();
-      parseFile(currentScreen);
+      init();
 
       displayScreen(currentScreen);
       String inp = scan.nextLine().toUpperCase();
 
       switch (inp) {
       case "C":
-        break;
+      break;
       case "I":
-        break;
+      break;
       case "F":
-        fish();
-        break;
+      fish();
+      break;
       case "E":
-        return;
+      return;
       }
     }
   }
 
-  private static File parseFile(File file) {
-    // Parse the file and access mainly the stats; Health, Hunger, and hydration
-    // using the special char '{' and '}'
-
-    // Read file and convert into an array
-    String output = FileLoader.readFile(file);
-    String[] out = output.split(" ");
-
-    for (int i = 0; i < out.length; i++) {
-      if (out[i].equals("Health:")) {
-        if (player.stats.containsKey("Health")) {
-          player.stats.replace("Health", Integer.parseInt(formatStat(out[i + 1])));
-        } else {
-          player.stats.put("Health", Integer.parseInt(formatStat(out[i + 1])));
-        }
+  private void init() {
+    // initialize the stats
+    try {
+      Scanner scan = new Scanner(new File("./Game/defaultStats.txt"));
+      String[][] stats = new String[2][1];
+      int line = 0;
+      while (scan.hasNextLine()) {
+        stats[line] = scan.nextLine().split(", ");
+        line++;
       }
+      player.stats.put(stats[0][0], Integer.parseInt(stats[1][0]));
+      player.stats.put(stats[0][1], Integer.parseInt(stats[1][1]));
+      player.stats.put(stats[0][2], Integer.parseInt(stats[1][2]));
 
-      if (out[i].equals("Hunger:")) {
-        if (player.stats.containsKey("Hunger")) {
-          player.stats.replace("Hunger", Integer.parseInt(formatStat(out[i + 1])));
-        } else {
-          player.stats.put("Hunger", Integer.parseInt(formatStat(out[i + 1])));
-        }
-      }
-
-      if (out[i].equals("Hydration:")) {
-        if (player.stats.containsKey("Hydration")) {
-          player.stats.replace("Hydration", Integer.parseInt(formatStat(out[i + 1])));
-        } else {
-          player.stats.put("Hydration", Integer.parseInt(formatStat(out[i + 1])));
-        }
-      }
+      scan.close();
+    } catch (IOException e) {
+      System.out.println("Java Exception: " + e);
     }
 
-    return file;
+    // initialize items
+    // Parse cartable items
+    try {
+      Scanner scan = new Scanner(new File("./Game/Items.txt"));
+      int lineN = 0;
+      while (scan.hasNextLine()) {
+        String line = scan.nextLine();
+        String[] info = line.split(", ");
+
+        // Catch the labels before its gets saved into the array.
+        if (info[0].equals("Name")) {
+          continue;
+        }
+
+        String name = info[0].trim();
+        String ID = info[1].trim();
+        boolean isUseable = Boolean.parseBoolean(info[2].trim());
+        boolean isCraftable = Boolean.parseBoolean(info[3].trim());
+
+        Item item = new Item(name, ID, isUseable, isCraftable);
+
+        if (isCraftable) {
+          for (int i = 4; i < info.length; i++) {
+            String[] recipe = info[i].split(" ");
+            item.addRecipe(items.get(recipe[0]), Integer.parseInt(recipe[2]));
+          }
+        }
+        items.put(name, item);
+      }
+    } catch (IOException e) {
+      System.out.println("Java Exception: " + e);
+    }
   }
 
   private static String formateOutput(File file) {
@@ -105,8 +122,8 @@ public class Game {
     // Change colors
 
     String healthColor = ANSI_BRIGHT_RED;
-    String HungerColor = ANSI_RED;
-    String hydrationColor = ANSI_BLUE;
+    String HungerColor = ANSI_BRIGHT_YELLOW;
+    String hydrationColor = ANSI_BRIGHT_BLUE;
     String output = "";
 
     try {
@@ -121,17 +138,18 @@ public class Game {
           int closingIndex = line.indexOf("}");
           int healthIndex = line.indexOf("Health: {");
           output += line.substring(0, healthIndex) + healthColor + "Health: " + player.stats.get("Health").toString()
-              + ANSI_RESET + "  " + line.substring(closingIndex + 1);
+              + ANSI_RESET + line.substring(closingIndex + player.stats.get("Health").toString().length() - 1);
         } else if (line.contains("Hunger")) {
           int closingIndex = line.indexOf("}");
           int HungerIndex = line.indexOf("Hunger: {");
           output += line.substring(0, HungerIndex) + HungerColor + "Hunger: " + player.stats.get("Hunger").toString()
-              + ANSI_RESET + "  " + line.substring(closingIndex + 1);
+              + ANSI_RESET + line.substring(closingIndex + player.stats.get("Hunger").toString().length() - 1);
         } else if (line.contains("Hydration")) {
           int closingIndex = line.indexOf("}");
           int hydrationIndex = line.indexOf("Hydration: {");
           output += line.substring(0, hydrationIndex) + hydrationColor + "Hydration: "
-              + player.stats.get("Hydration").toString() + ANSI_RESET + "  " + line.substring(closingIndex + 1);
+              + player.stats.get("Hydration").toString() + ANSI_RESET + " "
+              + line.substring(closingIndex + player.stats.get("Hydration").toString().length());
         } else {
           output += line;
         }
@@ -170,14 +188,6 @@ public class Game {
     wait(1000);
     System.out.println("You are lucky enough to fish up a " + item);
     wait(2000);
-  }
-
-  private static String formatStat(String out) {
-    // remove {} from out
-    // i.e. {100} -> 100
-    String a = out.substring(1, out.length() - 1);
-    System.out.println(a);
-    return a;
   }
 
   private static void displayScreen(File screen) {
