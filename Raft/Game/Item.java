@@ -7,6 +7,7 @@ public class Item {
   private String ID;
   private boolean isUseable;
   private boolean isCraftable;
+  private String[] buff = new String[2]; // Storing the name and the status
   private HashMap<Item, Integer> recipe = new HashMap<Item, Integer>();
 
   public Item(String name, String ID, boolean isUseable, boolean isCraftable) {
@@ -30,5 +31,10 @@ public class Item {
 
   public void addRecipe(Item item, int quantity) {
     this.recipe.put(item, quantity);
+  }
+
+  public void addBuff(String name, int stats) {
+    this.buff[0] = name;
+    this.buff[1] = Integer.toString(stats);
   }
 }

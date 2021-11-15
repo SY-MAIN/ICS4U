@@ -52,14 +52,14 @@ public class Game {
 
       switch (inp) {
       case "C":
-      break;
+        break;
       case "I":
-      break;
+        break;
       case "F":
-      fish();
-      break;
+        fish();
+        break;
       case "E":
-      return;
+        return;
       }
     }
   }
@@ -90,7 +90,7 @@ public class Game {
       int lineN = 0;
       while (scan.hasNextLine()) {
         String line = scan.nextLine();
-        String[] info = line.split(", ");
+        String[] info = line.split(",");
 
         // Catch the labels before its gets saved into the array.
         if (info[0].equals("Name")) {
@@ -100,12 +100,24 @@ public class Game {
         String name = info[0].trim();
         String ID = info[1].trim();
         boolean isUseable = Boolean.parseBoolean(info[2].trim());
-        boolean isCraftable = Boolean.parseBoolean(info[3].trim());
+        String usedBuff = info[3].trim();
+        boolean isCraftable = Boolean.parseBoolean(info[4].trim());
 
         Item item = new Item(name, ID, isUseable, isCraftable);
 
+        if (usedBuff.equals("NA")) {
+        } else if (usedBuff.equals("x2 item")) {
+          item.addBuff("itemBuff", 2);
+        } else if (usedBuff.equals("x3 item")) {
+          item.addBuff("itemBuff", 3);
+        } else {
+          // Add stats buff
+          String[] inf = usedBuff.split(" ");
+          item.addBuff(inf[1], Integer.parseInt(inf[0]));
+        }
+
         if (isCraftable) {
-          for (int i = 4; i < info.length; i++) {
+          for (int i = 5; i < info.length; i++) {
             String[] recipe = info[i].split(" ");
             item.addRecipe(items.get(recipe[0]), Integer.parseInt(recipe[2]));
           }
