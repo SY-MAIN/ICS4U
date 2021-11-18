@@ -1,4 +1,4 @@
-import ASCII_ART.Loader;
+import ASCII_ART.ASCIIART_setting;
 
 public class Render {
 
@@ -28,7 +28,7 @@ public class Render {
   }
 
   public static int menuScreen(String option[]) {
-    Render.displayCenterText(option, Loader.WIDTH);
+    Render.displayCenterText(option, ASCIIART_setting.WIDTH);
 
     return SaveScanner.nextInt("", false);
   }

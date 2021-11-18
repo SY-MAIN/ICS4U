@@ -14,7 +14,7 @@ public class Player {
   private int healthPerTurn = 10; // Lose 10 health for each turn that is hungry/hydrated
 
   public HashMap<String, Integer> stats = new HashMap<String, Integer>(); // Health, Hunger, Hydration
-  private HashMap<Item, Integer> inventory = new HashMap<Item, Integer>();
+  public HashMap<Item, Integer> inventory = new HashMap<Item, Integer>();
 
   public void nextTurn() {
     this.turn++;

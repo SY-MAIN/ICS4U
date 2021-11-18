@@ -2,7 +2,7 @@ package ASCII_ART;
 
 import java.io.File;
 
-public class Loader {
+public class ASCIIART_setting {
   public static File ArtDir = new File("./ASCII_ART");
   public static int WIDTH = 70;
   public static int HEIGHT = 20;

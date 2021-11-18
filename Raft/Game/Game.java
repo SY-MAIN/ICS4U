@@ -2,15 +2,16 @@ package Game;
 
 import java.util.*;
 import java.io.File;
-import ASCII_ART.Loader;
+
+import ASCII_ART.ASCIIART_setting;
 import FileLoad.FileLoader;
 import java.io.IOException;
 
 public class Game {
 
-  private static File Idle = Loader.returnFile("Idle");
-  private static File FishOnLine = Loader.returnFile("FishOnLine");
-  private static File IdleFishing = Loader.returnFile("IdleFishing");
+  private static File Idle = ASCIIART_setting.returnFile("Idle");
+  private static File FishOnLine = ASCIIART_setting.returnFile("FishOnLine");
+  private static File IdleFishing = ASCIIART_setting.returnFile("IdleFishing");
 
   private static Scanner scan = new Scanner(System.in);
   private static Player player;
@@ -46,21 +47,25 @@ public class Game {
     while (true) {
       clearScreen();
       init();
+      player.inventory.put(items.get("Bottle with SeaWater"), 2);
+      player.inventory.put(items.get("Fish"), 20);
 
       displayScreen(currentScreen);
-      String inp = scan.nextLine().toUpperCase();
+      // String inp = scan.nextLine().toUpperCase();
 
-      switch (inp) {
-      case "C":
-        break;
-      case "I":
-        break;
-      case "F":
-        fish();
-        break;
-      case "E":
-        return;
-      }
+      // switch (inp) {
+      // case "C":
+      // break;
+      // case "I":
+      // break;
+      // case "F":
+      // fishing();
+      // break;
+      // case "E":
+      // return;
+      // }
+      inventoryScreen();
+      wait(100000);
     }
   }
 
@@ -175,7 +180,7 @@ public class Game {
     return output;
   }
 
-  private static void fish() {
+  private static void fishing() {
     // Random number between 3-5 seconds
     int randint = randomInt(3, 6);
     displayScreen(IdleFishing);
@@ -202,16 +207,29 @@ public class Game {
     wait(2000);
   }
 
+  private static void inventoryScreen() {
+    clearScreen();
+
+    for (int i = 0; i < ASCIIART_setting.WIDTH; i++) {
+      System.out.print("*");
+    }
+    System.out.println("");
+
+    player.inventory.forEach((key, value) -> {
+      if (key != null) {
+        System.out.printf("* %-25s x%4d%37s\n", key.getName(), value, "*");
+      }
+    });
+
+    for (int i = 0; i < ASCIIART_setting.WIDTH; i++) {
+      System.out.print("*");
+    }
+    System.out.println("");
+
+  }
+
   private static void displayScreen(File screen) {
     System.out.print(formateOutput(screen));
-  }
-
-  private static long getTime() {
-    return System.currentTimeMillis();
-  }
-
-  private static long toMillis(int seconds) {
-    return seconds * 1000;
   }
 
   public static int randomInt(int min, int max) {
