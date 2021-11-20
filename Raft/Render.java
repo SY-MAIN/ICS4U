@@ -1,6 +1,10 @@
+import java.util.Scanner;
+
 import ASCII_ART.ASCIIART_setting;
 
 public class Render {
+
+  private static Scanner scan = new Scanner(System.in);
 
   public static void displayCenterText(String items[], int totalWidth) {
     System.out.println();
@@ -30,6 +34,6 @@ public class Render {
   public static int menuScreen(String option[]) {
     Render.displayCenterText(option, ASCIIART_setting.WIDTH);
 
-    return SaveScanner.nextInt("", false);
+    return scan.nextInt();
   }
 }

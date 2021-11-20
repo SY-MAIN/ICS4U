@@ -17,24 +17,28 @@ public class Game {
   private static Player player;
   private static HashMap<String, Item> items = new HashMap<String, Item>();
 
-  public static final String ANSI_RESET = "\u001B[0m";
-  public static final String ANSI_BLACK = "\u001B[30m";
-  public static final String ANSI_RED = "\u001B[31m";
-  public static final String ANSI_GREEN = "\u001B[32m";
-  public static final String ANSI_YELLOW = "\u001B[33m";
-  public static final String ANSI_BLUE = "\u001B[34m";
-  public static final String ANSI_PURPLE = "\u001B[35m";
-  public static final String ANSI_CYAN = "\u001B[36m";
-  public static final String ANSI_WHITE = "\u001B[37m";
+  private static final String ANSI_RESET = "\u001B[0m";
+  private static final String ANSI_BLACK = "\u001B[30m";
+  private static final String ANSI_RED = "\u001B[31m";
+  private static final String ANSI_GREEN = "\u001B[32m";
+  private static final String ANSI_YELLOW = "\u001B[33m";
+  private static final String ANSI_BLUE = "\u001B[34m";
+  private static final String ANSI_PURPLE = "\u001B[35m";
+  private static final String ANSI_CYAN = "\u001B[36m";
+  private static final String ANSI_WHITE = "\u001B[37m";
 
-  public static final String ANSI_BRIGHT_BLACK = "\u001B[90m";
-  public static final String ANSI_BRIGHT_RED = "\u001B[91m";
-  public static final String ANSI_BRIGHT_GREEN = "\u001B[92m";
-  public static final String ANSI_BRIGHT_YELLOW = "\u001B[93m";
-  public static final String ANSI_BRIGHT_BLUE = "\u001B[94m";
-  public static final String ANSI_BRIGHT_PURPLE = "\u001B[95m";
-  public static final String ANSI_BRIGHT_CYAN = "\u001B[96m";
-  public static final String ANSI_BRIGHT_WHITE = "\u001B[97m";
+  private static final String ANSI_BRIGHT_BLACK = "\u001B[90m";
+  private static final String ANSI_BRIGHT_RED = "\u001B[91m";
+  private static final String ANSI_BRIGHT_GREEN = "\u001B[92m";
+  private static final String ANSI_BRIGHT_YELLOW = "\u001B[93m";
+  private static final String ANSI_BRIGHT_BLUE = "\u001B[94m";
+  private static final String ANSI_BRIGHT_PURPLE = "\u001B[95m";
+  private static final String ANSI_BRIGHT_CYAN = "\u001B[96m";
+  private static final String ANSI_BRIGHT_WHITE = "\u001B[97m";
+
+  private static final String setPlainText = "\033[0m";
+  private static final String setBoldText = "\033[1m";
+  private static final String setItalicText = "\033[3m";
 
   public void main() {
 
@@ -47,25 +51,22 @@ public class Game {
     while (true) {
       clearScreen();
       init();
-      player.inventory.put(items.get("Bottle with SeaWater"), 2);
-      player.inventory.put(items.get("Fish"), 20);
 
       displayScreen(currentScreen);
-      // String inp = scan.nextLine().toUpperCase();
+      String inp = scan.nextLine().toUpperCase();
 
-      // switch (inp) {
-      // case "C":
-      // break;
-      // case "I":
-      // break;
-      // case "F":
-      // fishing();
-      // break;
-      // case "E":
-      // return;
-      // }
-      inventoryScreen();
-      wait(100000);
+      switch (inp) {
+      case "C":
+        break;
+      case "I":
+        inventoryScreen();
+        break;
+      case "F":
+        fishing();
+        break;
+      case "E":
+        return;
+      }
     }
   }
 
@@ -208,23 +209,64 @@ public class Game {
   }
 
   private static void inventoryScreen() {
-    clearScreen();
+    while (true) {
+      clearScreen();
 
-    for (int i = 0; i < ASCIIART_setting.WIDTH; i++) {
-      System.out.print("*");
-    }
-    System.out.println("");
-
-    player.inventory.forEach((key, value) -> {
-      if (key != null) {
-        System.out.printf("* %-25s x%4d%37s\n", key.getName(), value, "*");
+      // ================================================
+      // Display the inventory screen
+      // ================================================
+      for (int i = 0; i < ASCIIART_setting.WIDTH; i++) {
+        System.out.print("*");
       }
-    });
+      System.out.println();
 
-    for (int i = 0; i < ASCIIART_setting.WIDTH; i++) {
-      System.out.print("*");
+      player.inventory.forEach((key, value) -> {
+        if (key != null) {
+          System.out.printf("* %-25s x%4d%37s\n", key.getName(), value, "*");
+        }
+      });
+
+      for (int i = 0; i < ASCIIART_setting.WIDTH; i++) {
+        System.out.print("*");
+      }
+      System.out.println();
+
+      // ================================================
+      // Get inputs
+      // ================================================
+      System.out.println(setBoldText + setItalicText + "use <name>" + setPlainText + " to use a item");
+      System.out.println(setBoldText + setItalicText + "Exit" + setPlainText + " to return to main menu");
+
+      String inp = scan.nextLine().toLowerCase();
+
+      String[] info = inp.split(" ");
+
+      if (info.length == 1) {
+        // The input is Exit
+
+        if (info[0].equals("exit")) {
+          break;
+        }
+      } else if (info.length == 2) {
+        info[1] = capitalize(info[1]);
+        // The input is use <ID>
+
+        if (info[0].equals("use") && items.containsKey(info[1]) && player.inventory.containsKey(info[1])) {
+          if (items.get(info[1]).isUseable()) {
+            // Use item
+          } else {
+            System.out.println("Item not useable");
+            wait(1000);
+          }
+        } else {
+          System.out.println("Invalid Input!");
+          wait(1000);
+        }
+      } else {
+        System.out.println("Invalid Input!");
+        wait(1000);
+      }
     }
-    System.out.println("");
 
   }
 
@@ -232,7 +274,7 @@ public class Game {
     System.out.print(formateOutput(screen));
   }
 
-  public static int randomInt(int min, int max) {
+  private static int randomInt(int min, int max) {
     // ================================================
     // A method to generate a random number
     // ================================================
@@ -248,7 +290,7 @@ public class Game {
     return randObj.nextInt(max - min) + min;
   }
 
-  public static void wait(int ms) {
+  private static void wait(int ms) {
     try {
       Thread.sleep(ms);
     } catch (InterruptedException ex) {
@@ -256,12 +298,20 @@ public class Game {
     }
   }
 
-  public static void clearScreen() {
+  private static void clearScreen() {
     // ================================================
     // A method to clear the console
     // ================================================
     System.out.print("\033[H\033[2J");
     System.out.flush();
+  }
+
+  private static String capitalize(String str) {
+    if (str == null || str.isEmpty()) {
+      return str;
+    }
+
+    return str.substring(0, 1).toUpperCase() + str.substring(1);
   }
 }
 
