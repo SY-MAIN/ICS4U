@@ -50,23 +50,23 @@ public class Player {
       return;
     }
 
-    if (itemBuff[0] == "itemBuff") {
+    if (itemBuff[0].equals("itemBuff")) {
       currentRod = item;
       fishingBuff = itemBuff[1];
-    } else if (itemBuff[0] == "Health") {
+    } else if (itemBuff[0].equals("Health")) {
       int newHealth = this.stats.get("Health") + Integer.parseInt(itemBuff[1]);
 
       if (newHealth >= 100)
         this.stats.replace("Health", 100);
       else
         this.stats.replace("Health", newHealth);
-    } else if (itemBuff[0] == "Hunger") {
+    } else if (itemBuff[0].equals("Hunger")) {
       int newHunger = this.stats.get("Hunger") + Integer.parseInt(itemBuff[1]);
       if (newHunger >= 100)
         this.stats.replace("Hunger", 100);
       else
         this.stats.replace("Hunger", newHunger);
-    } else if (itemBuff[0] == "Hydration") {
+    } else if (itemBuff[0].equals("Hydration")) {
       int newHydration = this.stats.get("Hydration") + Integer.parseInt(itemBuff[1]);
       if (newHydration >= 100)
         this.stats.replace("Hydration", 100);

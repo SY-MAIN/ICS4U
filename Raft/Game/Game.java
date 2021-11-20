@@ -31,7 +31,7 @@ public class Game {
   private static Player player;
 
   // All the items in the game.
-  private static HashMap<String, Item> items = new HashMap<String, Item>();
+  private static HashMap<String, Item> items = new HashMap<String, Item>(); // ID, item
 
   // List of all the text colors and font styles
   private static final String ANSI_RESET = "\u001B[0m";
@@ -178,9 +178,10 @@ public class Game {
           for (int i = 5; i < info.length; i++) {
             String[] recipe = info[i].split(" ");
             item.addRecipe(items.get(recipe[0]), Integer.parseInt(recipe[2]));
+            System.out.println(items.get(recipe[0]) + " " + Integer.parseInt(recipe[2]));
           }
         }
-        items.put(name, item);
+        items.put(ID, item);
       }
     } catch (IOException e) {
       System.out.println("Java Exception: " + e);
@@ -282,7 +283,7 @@ public class Game {
 
     // Depending on the input and the random number, the player either gets the
     // item or don't.
-    if (inp == "R" && rand == 1) {
+    if (inp.equals("R") && rand == 1) {
       wait(1000);
       System.out.println("You are lucky enough to reel up a(n) " + item);
     } else {
@@ -349,13 +350,10 @@ public class Game {
       } else if (info.length == 2) {
         // The input is use <ID>
 
-        // Capitalize the item name to match the global items list.
-        info[1] = capitalize(info[1]);
-
-        // Check for the correct input and if the item exists
-        if (info[0].equals("use") && items.containsKey(info[1]) && player.inventory.containsKey(info[1])) {
+        // Check for the correct input and valid item
+        if (info[0].equals("use") && items.containsKey(info[1])) {
           // Check if the item is usable.
-          if (items.get(info[1]).isUseable()) {
+          if (items.get(info[1]).isUseable() && player.inventory.containsKey(items.get(info[1]))) {
             // Use the item
             player.useItem(items.get(info[1]));
           } else {
@@ -371,6 +369,107 @@ public class Game {
         wait(1000);
       }
     }
+  }
+
+  /**
+   * This method renders the crafting menu
+   * 
+   * @return void
+   * 
+   */
+  private static void crafting() {
+    boolean run = true;
+    while (true) {
+      // Clear the screen
+      clearScreen();
+
+      // ================================================
+      // Display the Crafting screen
+      // ================================================
+      // The top part of the Crafting screen
+      for (int i = 0; i < ASCIIART_setting.WIDTH; i++) {
+        System.out.print("*");
+      }
+      System.out.println();
+
+      // All the items in the Crafting menu
+      items.forEach((name, item) -> {
+        if (item.isCraftable()) {
+          System.out.printf("* %-25s %-20s %21s\n", item.getName(), "<" + item.getID() + ">", "*");
+          HashMap<Item, Integer> recipes = item.getRecipe();
+
+          recipes.forEach((recipeItem, quantity) -> {
+            System.out.printf("*    -> %-25s x%4d%31s\n", recipeItem.getName(), quantity, "*");
+          });
+          System.out.printf("*%68s*\n", " ");
+        }
+      });
+
+      // The bottom part of the Crafting screen
+      for (int i = 0; i < ASCIIART_setting.WIDTH; i++) {
+        System.out.print("*");
+      }
+      System.out.println();
+
+      // ================================================
+      // Get inputs
+      // ================================================
+      // Crafting menu
+      System.out.println(setBoldText + setItalicText + "Craft <ID>" + setPlainText + " to craft a item");
+      System.out.println(setBoldText + setItalicText + "Exit" + setPlainText + " to return to main menu");
+
+      String inp = scan.nextLine().toLowerCase();
+
+      String[] info = inp.split(" ");
+
+      // Check the inputs for the correct inputs
+      if (info.length == 1) {
+        // The input is Exit
+        if (info[0].equals("exit")) {
+          break;
+        }
+      } else if (info.length == 2) {
+        // The input is use <ID>
+
+        // Check for the correct input and valid item
+        if (info[0].equals("craft") && items.containsKey(info[1])) {
+
+          Item item = items.get(info[1]);
+          HashMap<Item, Integer> recipes = item.getRecipe();
+
+          // Check if you have all items in order to craft it.
+          for (var recipe : recipes.entrySet()) {
+            if (!player.inventory.containsKey(recipe.getKey())) {
+              System.out.println("You don't not have enough items to craft!");
+            } else if (player.inventory.get(recipe.getKey()) < recipe.getValue()) {
+              System.out.println("You don't not have enough items to craft!");
+            } else {
+              continue;
+            }
+            run = false;
+            wait(1000);
+            break;
+          }
+
+          // while loop check point
+          if (!run)
+            continue;
+
+          recipes.forEach((recipeItem, quantity) -> {
+            player.inventory.replace(recipeItem, player.inventory.get(recipeItem) - quantity);
+          });
+          wait(1000);
+
+        } else {
+          System.out.println("Invalid Input!");
+          wait(1000);
+        }
+      } else {
+        System.out.println("Invalid Input!");
+        wait(1000);
+      }
+    }
+
   }
 
   // ================================================
@@ -407,7 +506,7 @@ public class Game {
    * 
    */
   private static int randomInt(int min, int max) {
-    return new Random().nextInt(max - min) + min;
+    return new Random().nextInt(max - min + 1) + min;
   }
 
   /**
