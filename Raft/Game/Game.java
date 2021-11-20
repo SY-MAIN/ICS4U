@@ -7,16 +7,33 @@ import ASCII_ART.ASCIIART_setting;
 import FileLoad.FileLoader;
 import java.io.IOException;
 
+/**
+ * This Game class implements the game interface and logics of the game.
+ * 
+ * @author Simon Yang
+ * @version 1.0
+ * @since 2021-11-20
+ */
 public class Game {
 
+  // ================================================
+  // Global variables to the Game class
+  // ================================================
+  // The different screens to render from a file.
   private static File Idle = ASCIIART_setting.returnFile("Idle");
   private static File FishOnLine = ASCIIART_setting.returnFile("FishOnLine");
   private static File IdleFishing = ASCIIART_setting.returnFile("IdleFishing");
 
+  // Scanner to take in inputs from the player.
   private static Scanner scan = new Scanner(System.in);
+
+  // Player object
   private static Player player;
+
+  // All the items in the game.
   private static HashMap<String, Item> items = new HashMap<String, Item>();
 
+  // List of all the text colors and font styles
   private static final String ANSI_RESET = "\u001B[0m";
   private static final String ANSI_BLACK = "\u001B[30m";
   private static final String ANSI_RED = "\u001B[31m";
@@ -40,46 +57,77 @@ public class Game {
   private static final String setBoldText = "\033[1m";
   private static final String setItalicText = "\033[3m";
 
+  /**
+   * This method is the main method that runs the game. The method contains code
+   * to render the game and do logics operations base on user's inputs
+   * 
+   * @return void
+   * 
+   */
   public void main() {
 
+    // Initialize the current screen to render
     File currentScreen = Idle;
 
-    // Create new player
+    // Create a new player
     player = new Player();
 
-    // Update per Turn
+    // Initialize the game
+    initGame();
+
+    // Main game loop.
     while (true) {
       clearScreen();
-      init();
 
+      // Display the current screen
       displayScreen(currentScreen);
+
+      // Get inputs from the player for the next action.
       String inp = scan.nextLine().toUpperCase();
 
       switch (inp) {
       case "C":
-        break;
+        crafting();
+        continue;
       case "I":
-        inventoryScreen();
-        break;
+        // Open the inventory
+        inventory();
+        continue;
       case "F":
+        // Open the fishing screen
         fishing();
         break;
       case "E":
+        // Exit out of the game
         return;
       }
+
+      // increment the turn and deduct stats from the player to simulate time has
+      // pass.
+      player.nextTurn();
     }
   }
 
-  private void init() {
-    // initialize the stats
+  /**
+   * This method initialize and parses the defaultStats and items from a flat
+   * file.
+   * 
+   * @return void
+   * 
+   */
+  private void initGame() {
+    // initialize the default stats
     try {
+      // Scan the stats file into a 2d array for easier access.
       Scanner scan = new Scanner(new File("./Game/defaultStats.txt"));
       String[][] stats = new String[2][1];
       int line = 0;
+
       while (scan.hasNextLine()) {
         stats[line] = scan.nextLine().split(", ");
         line++;
       }
+      // Store the stats to player stats
       player.stats.put(stats[0][0], Integer.parseInt(stats[1][0]));
       player.stats.put(stats[0][1], Integer.parseInt(stats[1][1]));
       player.stats.put(stats[0][2], Integer.parseInt(stats[1][2]));
@@ -89,9 +137,9 @@ public class Game {
       System.out.println("Java Exception: " + e);
     }
 
-    // initialize items
-    // Parse cartable items
+    // initialize items into the global item hashMap
     try {
+      // Scan the items file and read each item line by line.
       Scanner scan = new Scanner(new File("./Game/Items.txt"));
       int lineN = 0;
       while (scan.hasNextLine()) {
@@ -103,25 +151,29 @@ public class Game {
           continue;
         }
 
+        // Parse all the important information.
         String name = info[0].trim();
         String ID = info[1].trim();
         boolean isUseable = Boolean.parseBoolean(info[2].trim());
         String usedBuff = info[3].trim();
         boolean isCraftable = Boolean.parseBoolean(info[4].trim());
 
+        // Initialize an item object to store all the information about the item.
         Item item = new Item(name, ID, isUseable, isCraftable);
 
+        // Store the effects of the item
         if (usedBuff.equals("NA")) {
         } else if (usedBuff.equals("x2 item")) {
           item.addBuff("itemBuff", 2);
         } else if (usedBuff.equals("x3 item")) {
           item.addBuff("itemBuff", 3);
         } else {
-          // Add stats buff
+          // Add stats buffs
           String[] inf = usedBuff.split(" ");
           item.addBuff(inf[1], Integer.parseInt(inf[0]));
         }
 
+        // Add recipe to each item
         if (isCraftable) {
           for (int i = 5; i < info.length; i++) {
             String[] recipe = info[i].split(" ");
@@ -135,39 +187,52 @@ public class Game {
     }
   }
 
+  /**
+   * This method formats the output screen to include colors and status
+   * information.
+   * 
+   * @param file The raw file to be formatted.
+   * @return String This returns the new output screen.
+   * 
+   */
   private static String formateOutput(File file) {
-    // Change stats
-    // Change colors
 
+    // Declare local variables for the status colors.
     String healthColor = ANSI_BRIGHT_RED;
     String HungerColor = ANSI_BRIGHT_YELLOW;
     String hydrationColor = ANSI_BRIGHT_BLUE;
+
     String output = "";
 
     try {
-
+      // Open the file and scan each line.
       Scanner fileInput = new Scanner(file);
 
       while (fileInput.hasNextLine()) {
         String line = fileInput.nextLine();
-        // System.out.println("line " + line);
+
+        // Replace each line with its corresponding colors and stats when the line
+        // contains the specific information required.
 
         if (line.contains("Health")) {
           int closingIndex = line.indexOf("}");
           int healthIndex = line.indexOf("Health: {");
           output += line.substring(0, healthIndex) + healthColor + "Health: " + player.stats.get("Health").toString()
               + ANSI_RESET + line.substring(closingIndex + player.stats.get("Health").toString().length() - 1);
+
         } else if (line.contains("Hunger")) {
           int closingIndex = line.indexOf("}");
           int HungerIndex = line.indexOf("Hunger: {");
           output += line.substring(0, HungerIndex) + HungerColor + "Hunger: " + player.stats.get("Hunger").toString()
               + ANSI_RESET + line.substring(closingIndex + player.stats.get("Hunger").toString().length() - 1);
+
         } else if (line.contains("Hydration")) {
           int closingIndex = line.indexOf("}");
           int hydrationIndex = line.indexOf("Hydration: {");
           output += line.substring(0, hydrationIndex) + hydrationColor + "Hydration: "
               + player.stats.get("Hydration").toString() + ANSI_RESET + " "
               + line.substring(closingIndex + player.stats.get("Hydration").toString().length());
+
         } else {
           output += line;
         }
@@ -181,11 +246,19 @@ public class Game {
     return output;
   }
 
+  /**
+   * This method renders the fishing menu and mechanics of fishing.
+   * 
+   * @return void
+   * 
+   */
   private static void fishing() {
-    // Random number between 3-5 seconds
-    int randint = randomInt(3, 6);
     displayScreen(IdleFishing);
 
+    // Generate a random number between 3-6 seconds to simulate some time has pass.
+    int randint = randomInt(3, 6);
+
+    // Display some fishing dialogs
     for (int i = 0; i < randint; i++) {
       if (i == 1) {
         System.out.println(
@@ -196,35 +269,60 @@ public class Game {
       }
       wait(1000);
     }
-    System.out.println("The float is shaking continuously and water is rippling. A fish bit!");
+
+    System.out.println("The float is shaking continuously and water is rippling. A bit!");
     displayScreen(FishOnLine);
 
+    // Get player's input to reel in the fish.
     String item = "Fish";
     System.out.println("Enter R to reel it in");
-    scan.nextLine();
+    String inp = scan.nextLine().toUpperCase();
 
-    wait(1000);
-    System.out.println("You are lucky enough to fish up a " + item);
+    int rand = randomInt(0, 1); // Maybe change if there is fishing buff??
+
+    // Depending on the input and the random number, the player either gets the
+    // item or don't.
+    if (inp == "R" && rand == 1) {
+      wait(1000);
+      System.out.println("You are lucky enough to reel up a(n) " + item);
+    } else {
+      System.out.println("You try reeling it in, but failed. It got away.");
+    }
+
     wait(2000);
   }
 
-  private static void inventoryScreen() {
+  /**
+   * This method renders the inventory and a menu to perform some actions to an
+   * item.
+   * 
+   * @return void
+   * 
+   */
+  private static void inventory() {
+    // A while loop to constantly display the inventory
     while (true) {
+      // Clear the screen
       clearScreen();
 
       // ================================================
       // Display the inventory screen
       // ================================================
+      // The top part of the inventory screen
       for (int i = 0; i < ASCIIART_setting.WIDTH; i++) {
         System.out.print("*");
       }
       System.out.println();
 
+      // All the items in the inventory
       player.inventory.forEach((key, value) -> {
         if (key != null) {
+          // Format each item in the inventory
           System.out.printf("* %-25s x%4d%37s\n", key.getName(), value, "*");
         }
       });
+
+      // The bottom part of the inventory screen
 
       for (int i = 0; i < ASCIIART_setting.WIDTH; i++) {
         System.out.print("*");
@@ -234,6 +332,7 @@ public class Game {
       // ================================================
       // Get inputs
       // ================================================
+      // Inventory menu
       System.out.println(setBoldText + setItalicText + "use <name>" + setPlainText + " to use a item");
       System.out.println(setBoldText + setItalicText + "Exit" + setPlainText + " to return to main menu");
 
@@ -241,19 +340,24 @@ public class Game {
 
       String[] info = inp.split(" ");
 
+      // Check the inputs for the correct inputs
       if (info.length == 1) {
         // The input is Exit
-
         if (info[0].equals("exit")) {
           break;
         }
       } else if (info.length == 2) {
-        info[1] = capitalize(info[1]);
         // The input is use <ID>
 
+        // Capitalize the item name to match the global items list.
+        info[1] = capitalize(info[1]);
+
+        // Check for the correct input and if the item exists
         if (info[0].equals("use") && items.containsKey(info[1]) && player.inventory.containsKey(info[1])) {
+          // Check if the item is usable.
           if (items.get(info[1]).isUseable()) {
-            // Use item
+            // Use the item
+            player.useItem(items.get(info[1]));
           } else {
             System.out.println("Item not useable");
             wait(1000);
@@ -267,29 +371,52 @@ public class Game {
         wait(1000);
       }
     }
-
   }
 
+  // ================================================
+  // Helper methods
+  // ================================================
+
+  /**
+   * This method renders the screen
+   * 
+   * @param screen The file to render onto the console
+   * @return void
+   * 
+   */
   private static void displayScreen(File screen) {
+    // Pass the file to formate the file and display the returned screen.
     System.out.print(formateOutput(screen));
   }
 
+  /**
+   * This method returns a random number between min and max
+   * 
+   * <p>
+   * <b>NOTE: </b>Due to the built-in method, it will always return a random
+   * number between 0 and a number. By adding the min value, and altering the
+   * parameter value, we can offset the random number by the min value. For
+   * example, if you want a random number between 10 and 20 inclusive, we can
+   * offset the value by adding the min value to the random value. To account for
+   * the addition of the min value, we will subtract the min value from the max
+   * value.
+   * 
+   * @param min The min value inclusive of the random number.
+   * @param max The min value inclusive of the random number.
+   * @return void
+   * 
+   */
   private static int randomInt(int min, int max) {
-    // ================================================
-    // A method to generate a random number
-    // ================================================
-    Random randObj = new Random();
-    /*
-     * Due to the built-in method, it will always return a random number between 0
-     * and a number. By adding the min value, and altering the parameter value, we
-     * can offset the random number by the min value. For example, if you want a
-     * random number between 10 and 20 inclusive, we can offset the value by adding
-     * the min value to the random value. To account for the addition of the min
-     * value, we will subtract the min value from the max value.
-     */
-    return randObj.nextInt(max - min) + min;
+    return new Random().nextInt(max - min) + min;
   }
 
+  /**
+   * The method puts the thread into sleep for the specified amount of time
+   * 
+   * @param ms The amount of time to sleep in milliseconds.
+   * @return void
+   * 
+   */
   private static void wait(int ms) {
     try {
       Thread.sleep(ms);
@@ -298,6 +425,16 @@ public class Game {
     }
   }
 
+  /**
+   * The method Clears the console screen base on the size
+   * <p>
+   * 
+   * <b>Note: </b> Some of the console text may not be clear due the console's
+   * size.
+   * 
+   * @return void
+   * 
+   */
   private static void clearScreen() {
     // ================================================
     // A method to clear the console
@@ -306,11 +443,17 @@ public class Game {
     System.out.flush();
   }
 
+  /**
+   * The method capitalize the first letter of the given string.
+   * 
+   * @param str The given string to capitalize.
+   * @return String Returns the capitalized string.
+   * 
+   */
   private static String capitalize(String str) {
     if (str == null || str.isEmpty()) {
       return str;
     }
-
     return str.substring(0, 1).toUpperCase() + str.substring(1);
   }
 }

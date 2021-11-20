@@ -29,6 +29,18 @@ public class Item {
     return this.isUseable;
   }
 
+  public boolean isCraftable() {
+    return this.isCraftable;
+  }
+
+  public String[] getBuff() {
+    return this.buff;
+  }
+
+  public HashMap<Item, Integer> getRecipe() {
+    return this.recipe;
+  }
+
   public void addRecipe(Item item, int quantity) {
     this.recipe.put(item, quantity);
   }

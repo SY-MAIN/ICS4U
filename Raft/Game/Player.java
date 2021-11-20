@@ -42,4 +42,37 @@ public class Player {
       this.stats.replace("Health", 0);
     }
   }
+
+  public void useItem(Item item) {
+    String[] itemBuff = item.getBuff();
+    if (itemBuff.length == 0) {
+      // item buff is NA
+      return;
+    }
+
+    if (itemBuff[0] == "itemBuff") {
+      currentRod = item;
+      fishingBuff = itemBuff[1];
+    } else if (itemBuff[0] == "Health") {
+      int newHealth = this.stats.get("Health") + Integer.parseInt(itemBuff[1]);
+
+      if (newHealth >= 100)
+        this.stats.replace("Health", 100);
+      else
+        this.stats.replace("Health", newHealth);
+    } else if (itemBuff[0] == "Hunger") {
+      int newHunger = this.stats.get("Hunger") + Integer.parseInt(itemBuff[1]);
+      if (newHunger >= 100)
+        this.stats.replace("Hunger", 100);
+      else
+        this.stats.replace("Hunger", newHunger);
+    } else if (itemBuff[0] == "Hydration") {
+      int newHydration = this.stats.get("Hydration") + Integer.parseInt(itemBuff[1]);
+      if (newHydration >= 100)
+        this.stats.replace("Hydration", 100);
+      else
+        this.stats.replace("Hydration", newHydration);
+    }
+
+  }
 }
