@@ -28,7 +28,7 @@ public class Game {
   private static Scanner scan = new Scanner(System.in);
 
   // Player object
-  private static Player player;
+  private static Player player = new Player();
 
   // All the items in the game.
   private static HashMap<String, Item> items = new HashMap<String, Item>(); // ID, item
@@ -57,6 +57,20 @@ public class Game {
   private static final String setBoldText = "\033[1m";
   private static final String setItalicText = "\033[3m";
 
+  public Game(String statsFile, String inventoryFile) {
+    // Initialize the game
+    initItems();
+    initStats(statsFile);
+    initInventory(inventoryFile);
+  }
+
+  public Game() {
+    // Initialize the game
+    initItems();
+    // Init default stats
+    initStats();
+  }
+
   /**
    * This method is the main method that runs the game. The method contains code
    * to render the game and do logics operations base on user's inputs
@@ -69,11 +83,7 @@ public class Game {
     // Initialize the current screen to render
     File currentScreen = Idle;
 
-    // Create a new player
-    player = new Player();
-
-    // Initialize the game
-    initGame();
+    // introductionStory();
 
     // Main game loop.
     while (true) {
@@ -109,13 +119,12 @@ public class Game {
   }
 
   /**
-   * This method initialize and parses the defaultStats and items from a flat
-   * file.
+   * This method initialize and parses the defaultStats from a flat file
    * 
    * @return void
    * 
    */
-  private void initGame() {
+  private void initStats() {
     // initialize the default stats
     try {
       // Scan the stats file into a 2d array for easier access.
@@ -124,7 +133,103 @@ public class Game {
       int line = 0;
 
       while (scan.hasNextLine()) {
-        stats[line] = scan.nextLine().split(", ");
+        stats[line] = scan.nextLine().split(",");
+        line++;
+      }
+      // Store the stats to player stats
+      player.stats.put(stats[0][0], Integer.parseInt(stats[1][0]));
+      player.stats.put(stats[0][1], Integer.parseInt(stats[1][1]));
+      player.stats.put(stats[0][2], Integer.parseInt(stats[1][2]));
+
+      scan.close();
+    } catch (IOException e) {
+      System.out.println("Java Exception: " + e);
+    }
+  }
+
+  /**
+   * This method initialize and parses the player's stats and other information
+   * from the save file
+   * 
+   * @param saveFile The name of the save file to be loaded.
+   * @return void
+   * 
+   */
+  private void initStats(String saveFile) {
+    try {
+      // Scan the save file into a 2d array for easier access.
+      Scanner scan = new Scanner(new File("./Game/" + saveFile));
+      String[][] info = new String[2][7]; // Init only two because we only have one save file at a time.
+      int line = 0;
+
+      while (scan.hasNextLine()) {
+        info[line++] = scan.nextLine().split(",");
+      }
+
+      // Store the information to player stats
+      player.setName(info[1][0]);
+      player.setTurn(Integer.parseInt(info[1][1]));
+      player.setCurrentRod(items.get(info[1][2]));
+      player.setFishingBuff(Integer.parseInt(info[1][3]));
+      player.stats.put(info[0][4], Integer.parseInt(info[1][4]));
+      player.stats.put(info[0][5], Integer.parseInt(info[1][5]));
+      player.stats.put(info[0][6], Integer.parseInt(info[1][6]));
+
+      scan.close();
+    } catch (IOException e) {
+      System.out.println("Java Exception: " + e);
+    }
+  }
+
+  /**
+   * This method initialize and parses the inventory from a save file
+   * 
+   * @param saveFile The name of the save file to be loaded.
+   * @return void
+   * 
+   */
+  private void initInventory(String saveFile) {
+    // initialize the default stats
+    try {
+      // Scan the save file into a 2d array for easier access.
+      Scanner scan = new Scanner(new File("./Game/" + saveFile));
+      String[][] info = new String[100][3];
+      int line = 0;
+
+      // Save the information into the 2d array.
+      while (scan.hasNextLine()) {
+        info[line++] = scan.nextLine().split(",");
+      }
+
+      // Parse the information and save into player's inventory.
+      for (int i = 1; i < info.length; i++) {
+        if (info[i][0] == null) {
+          break;
+        }
+        player.inventory.put(items.get(info[i][1]), Integer.parseInt(info[i][2]));
+      }
+      scan.close();
+    } catch (IOException e) {
+      System.out.println("Java Exception: " + e);
+    }
+  }
+
+  /**
+   * This method initialize and parses the items from a flat file.
+   * 
+   * @return void
+   * 
+   */
+  private void initItems() {
+    // initialize the default stats
+    try {
+      // Scan the stats file into a 2d array for easier access.
+      Scanner scan = new Scanner(new File("./Game/defaultStats.txt"));
+      String[][] stats = new String[2][1];
+      int line = 0;
+
+      while (scan.hasNextLine()) {
+        stats[line] = scan.nextLine().split(",");
         line++;
       }
       // Store the stats to player stats
@@ -178,7 +283,6 @@ public class Game {
           for (int i = 5; i < info.length; i++) {
             String[] recipe = info[i].split(" ");
             item.addRecipe(items.get(recipe[0]), Integer.parseInt(recipe[2]));
-            System.out.println(items.get(recipe[0]) + " " + Integer.parseInt(recipe[2]));
           }
         }
         items.put(ID, item);
@@ -219,13 +323,13 @@ public class Game {
           int closingIndex = line.indexOf("}");
           int healthIndex = line.indexOf("Health: {");
           output += line.substring(0, healthIndex) + healthColor + "Health: " + player.stats.get("Health").toString()
-              + ANSI_RESET + line.substring(closingIndex + player.stats.get("Health").toString().length() - 1);
+              + ANSI_RESET + " " + line.substring(closingIndex + player.stats.get("Health").toString().length());
 
         } else if (line.contains("Hunger")) {
           int closingIndex = line.indexOf("}");
           int HungerIndex = line.indexOf("Hunger: {");
           output += line.substring(0, HungerIndex) + HungerColor + "Hunger: " + player.stats.get("Hunger").toString()
-              + ANSI_RESET + line.substring(closingIndex + player.stats.get("Hunger").toString().length() - 1);
+              + ANSI_RESET + " " + line.substring(closingIndex + player.stats.get("Hunger").toString().length());
 
         } else if (line.contains("Hydration")) {
           int closingIndex = line.indexOf("}");
@@ -469,7 +573,28 @@ public class Game {
         wait(1000);
       }
     }
+  }
 
+  /**
+   * This method renders the introduction story with a 1s delay per line.
+   * 
+   * @return void
+   * 
+   */
+  private static void introductionStory() {
+    clearScreen();
+    File beginningStory = new File("./Game/beginningStory.txt");
+    try {
+      Scanner fileInput = new Scanner(beginningStory);
+
+      while (fileInput.hasNextLine()) {
+        System.out.println(fileInput.nextLine());
+        wait(2000);
+      }
+      fileInput.close();
+    } catch (IOException e) {
+      System.err.println("Java Exception: " + e);
+    }
   }
 
   // ================================================
@@ -540,20 +665,6 @@ public class Game {
     // ================================================
     System.out.print("\033[H\033[2J");
     System.out.flush();
-  }
-
-  /**
-   * The method capitalize the first letter of the given string.
-   * 
-   * @param str The given string to capitalize.
-   * @return String Returns the capitalized string.
-   * 
-   */
-  private static String capitalize(String str) {
-    if (str == null || str.isEmpty()) {
-      return str;
-    }
-    return str.substring(0, 1).toUpperCase() + str.substring(1);
   }
 }
 

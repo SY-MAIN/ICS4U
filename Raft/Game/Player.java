@@ -7,7 +7,7 @@ public class Player {
   private int turn = 0;
 
   private Item currentRod = null;
-  private String fishingBuff = "";
+  private int fishingBuff = 1;
 
   private int hungerPerTurn = 20; // Lose 20 hunger for each turn
   private int hydrationTurn = 15; // Gain 25 hydration for each turn
@@ -51,8 +51,8 @@ public class Player {
     }
 
     if (itemBuff[0].equals("itemBuff")) {
-      currentRod = item;
-      fishingBuff = itemBuff[1];
+      this.currentRod = item;
+      this.fishingBuff = Integer.parseInt(itemBuff[1]);
     } else if (itemBuff[0].equals("Health")) {
       int newHealth = this.stats.get("Health") + Integer.parseInt(itemBuff[1]);
 
@@ -73,6 +73,21 @@ public class Player {
       else
         this.stats.replace("Hydration", newHydration);
     }
+  }
 
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public void setTurn(int turn) {
+    this.turn = turn;
+  }
+
+  public void setCurrentRod(Item currentRod) {
+    this.currentRod = currentRod;
+  }
+
+  public void setFishingBuff(int fishingBuff) {
+    this.fishingBuff = fishingBuff;
   }
 }

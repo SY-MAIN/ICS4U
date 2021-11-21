@@ -9,8 +9,8 @@ Plastic bag,plasticbag,false,NA,false
 Fish,fish,true,25 Hunger,false
 Kelp,kelp,true,25 Hunger,false
 Stick,stick,false,NA,false
-Fishing Rod,rod,true,x2 item,true,stick * 2,string * 5
-Fishing Net,net,true,x3 item,true,rod * 1,stick * 10,string * 10
+Fishing Rod,rod,true,2 item,true,stick * 2,string * 5
+Fishing Net,net,true,3 item,true,rod * 1,stick * 10,string * 10
 Bandage,bandage,true,20 Heath,true,clothscrap * 5,string * 3
 Planks,planks,false,NA,true,stick * 3
 Basic Water Filter,basicwater,true,10 Hydration,true,bottleseawater * 2
