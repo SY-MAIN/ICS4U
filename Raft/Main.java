@@ -29,12 +29,14 @@ class Main {
         /*
          * Delete any save file, Render new game,
          */
-        new Game("./SaveFile/player.txt", "./SaveFile/inventory.txt").main();
+        new Game().main();
+
         continue;
       case 2:
         /*
          * Render save file,
          */
+        new Game("./SaveFile/player.txt", "./SaveFile/inventory.txt").main();
         break;
       case 3:
         /*
@@ -101,7 +103,7 @@ class Main {
   }
 
   public static int menuScreen(String option[]) {
-    Render.displayCenterText(option, ASCIIART_setting.WIDTH);
+    displayCenterText(option, ASCIIART_setting.WIDTH);
 
     return scan.nextInt();
   }

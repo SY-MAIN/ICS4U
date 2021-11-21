@@ -90,4 +90,12 @@ public class Player {
   public void setFishingBuff(int fishingBuff) {
     this.fishingBuff = fishingBuff;
   }
+
+  public String getName() {
+    return this.name;
+  }
+
+  public int getFishingBuff() {
+    return fishingBuff;
+  }
 }

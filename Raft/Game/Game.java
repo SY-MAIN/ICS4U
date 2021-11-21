@@ -4,7 +4,6 @@ import java.util.*;
 import java.io.File;
 
 import ASCII_ART.ASCIIART_setting;
-import FileLoad.FileLoader;
 import java.io.IOException;
 
 /**
@@ -159,7 +158,7 @@ public class Game {
     try {
       // Scan the save file into a 2d array for easier access.
       Scanner scan = new Scanner(new File("./Game/" + saveFile));
-      String[][] info = new String[2][7]; // Init only two because we only have one save file at a time.
+      String[][] info = new String[2][7]; // Init only two memory slots because we only have one save file at a time.
       int line = 0;
 
       while (scan.hasNextLine()) {
@@ -189,7 +188,6 @@ public class Game {
    * 
    */
   private void initInventory(String saveFile) {
-    // initialize the default stats
     try {
       // Scan the save file into a 2d array for easier access.
       Scanner scan = new Scanner(new File("./Game/" + saveFile));
@@ -378,8 +376,18 @@ public class Game {
     System.out.println("The float is shaking continuously and water is rippling. A bit!");
     displayScreen(FishOnLine);
 
-    // Get player's input to reel in the fish.
-    String item = "Fish";
+    // Get player's input to reel in the item. Randomize the item by indexing the
+    // hashmap by a random number.
+    int randItemIndex = randomInt(0, items.size());
+    Item item = items.get("fish");
+    int counter = 0;
+
+    for (var entry : items.entrySet()) {
+      if (counter++ == randItemIndex) {
+        item = entry.getValue();
+      }
+    }
+
     System.out.println("Enter R to reel it in");
     String inp = scan.nextLine().toUpperCase();
 
@@ -389,7 +397,15 @@ public class Game {
     // item or don't.
     if (inp.equals("R") && rand == 1) {
       wait(1000);
-      System.out.println("You are lucky enough to reel up a(n) " + item);
+      System.out.println("You are lucky enough to reel up a(n) " + item.getName());
+
+      // Check if the item exists in the inventory
+      if (player.inventory.containsKey(item)) {
+        player.inventory.replace(item, player.inventory.get(item) + (1 * player.getFishingBuff()));
+      } else {
+        // Add the item to the inventory if it doesn't already exist'
+        player.inventory.put(item, (1 * player.getFishingBuff()));
+      }
     } else {
       System.out.println("You try reeling it in, but failed. It got away.");
     }
@@ -559,6 +575,7 @@ public class Game {
           if (!run)
             continue;
 
+          // Take away the items to confirm the craft.
           recipes.forEach((recipeItem, quantity) -> {
             player.inventory.replace(recipeItem, player.inventory.get(recipeItem) - quantity);
           });
@@ -582,13 +599,17 @@ public class Game {
    * 
    */
   private static void introductionStory() {
+    // Clear previous screen
     clearScreen();
+    // Read beginning story file.
     File beginningStory = new File("./Game/beginningStory.txt");
     try {
       Scanner fileInput = new Scanner(beginningStory);
 
+      // Read until no more lines are left.
       while (fileInput.hasNextLine()) {
         System.out.println(fileInput.nextLine());
+        // Add delay for the player to have read.
         wait(2000);
       }
       fileInput.close();
@@ -668,9 +689,5 @@ public class Game {
   }
 }
 
-// Story Introduction
-// Draw Screen
-// Get input
-// Rerender base on input
 // Story Ending
 // (Win Condition)
