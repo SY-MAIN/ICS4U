@@ -38,6 +38,9 @@ class Main {
   public static void main(String[] args) {
     Player player = new Player();
 
+    System.out.println("Please Play In Full Screen! :)");
+    scan.nextLine();
+
     // Main while loop.
     while (true) {
       // Clear the screen.

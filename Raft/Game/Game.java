@@ -19,9 +19,9 @@ public class Game {
   // Global variables to the Game class
   // ================================================
   // The different screens to render from a file.
-  private static File Idle = ASCIIART_setting.returnFile("Idle");
-  private static File FishOnLine = ASCIIART_setting.returnFile("FishOnLine");
-  private static File IdleFishing = ASCIIART_setting.returnFile("IdleFishing");
+  private static File Idle = ASCIIART_setting.returnFile("/Idle.txt");
+  private static File FishOnLine = ASCIIART_setting.returnFile("/FishOnLine.txt");
+  private static File IdleFishing = ASCIIART_setting.returnFile("/IdleFishing.txt");
 
   // Scanner to take in inputs from the player.
   private static Scanner scan = new Scanner(System.in);
