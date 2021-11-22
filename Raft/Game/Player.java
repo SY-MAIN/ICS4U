@@ -96,6 +96,26 @@ public class Player {
   }
 
   public int getFishingBuff() {
-    return fishingBuff;
+    return this.fishingBuff;
+  }
+
+  public int getTurn() {
+    return this.turn;
+  }
+
+  public Item getCurrentRod() {
+    return this.currentRod;
+  }
+
+  public int getHealth() {
+    return this.stats.get("Health");
+  }
+
+  public int getHunger() {
+    return this.stats.get("Hunger");
+  }
+
+  public int getHydration() {
+    return this.stats.get("Hydration");
   }
 }

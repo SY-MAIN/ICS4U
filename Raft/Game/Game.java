@@ -74,10 +74,10 @@ public class Game {
    * This method is the main method that runs the game. The method contains code
    * to render the game and do logics operations base on user's inputs
    * 
-   * @return void
+   * @return Player Returns player for saving files
    * 
    */
-  public void main() {
+  public Player main() {
 
     // Initialize the current screen to render
     File currentScreen = Idle;
@@ -108,7 +108,7 @@ public class Game {
         break;
       case "E":
         // Exit out of the game
-        return;
+        return player;
       }
 
       // increment the turn and deduct stats from the player to simulate time has
@@ -219,27 +219,6 @@ public class Game {
    * 
    */
   private void initItems() {
-    // initialize the default stats
-    try {
-      // Scan the stats file into a 2d array for easier access.
-      Scanner scan = new Scanner(new File("./Game/defaultStats.txt"));
-      String[][] stats = new String[2][1];
-      int line = 0;
-
-      while (scan.hasNextLine()) {
-        stats[line] = scan.nextLine().split(",");
-        line++;
-      }
-      // Store the stats to player stats
-      player.stats.put(stats[0][0], Integer.parseInt(stats[1][0]));
-      player.stats.put(stats[0][1], Integer.parseInt(stats[1][1]));
-      player.stats.put(stats[0][2], Integer.parseInt(stats[1][2]));
-
-      scan.close();
-    } catch (IOException e) {
-      System.out.println("Java Exception: " + e);
-    }
-
     // initialize items into the global item hashMap
     try {
       // Scan the items file and read each item line by line.
@@ -612,6 +591,7 @@ public class Game {
         // Add delay for the player to have read.
         wait(2000);
       }
+      scan.nextLine();
       fileInput.close();
     } catch (IOException e) {
       System.err.println("Java Exception: " + e);

@@ -1,2 +1,1 @@
 Name,ID,quantity
-Planks,planks,10
