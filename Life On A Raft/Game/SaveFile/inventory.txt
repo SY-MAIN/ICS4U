@@ -1,0 +1,10 @@
+Name,ID,quantity
+Stick,stick,1
+Stick,stick,1
+Plastic bag,plasticbag,3
+Plastic bag,plasticbag,3
+Stick,stick,1
+Rock,rock,1
+Plastic bag,plasticbag,3
+Rock,rock,1
+Rock,rock,1

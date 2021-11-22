@@ -1,0 +1,2 @@
+turn,currentRod,fishingBuff,Health,Hunger,Hydration
+6,null,1,100,70,70
