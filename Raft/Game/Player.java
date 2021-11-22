@@ -3,7 +3,6 @@ package Game;
 import java.util.*;
 
 public class Player {
-  private String name;
   private int turn = 0;
 
   private Item currentRod = null;
@@ -75,10 +74,6 @@ public class Player {
     }
   }
 
-  public void setName(String name) {
-    this.name = name;
-  }
-
   public void setTurn(int turn) {
     this.turn = turn;
   }
@@ -89,10 +84,6 @@ public class Player {
 
   public void setFishingBuff(int fishingBuff) {
     this.fishingBuff = fishingBuff;
-  }
-
-  public String getName() {
-    return this.name;
   }
 
   public int getFishingBuff() {

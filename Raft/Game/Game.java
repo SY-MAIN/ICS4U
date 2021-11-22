@@ -166,13 +166,12 @@ public class Game {
       }
 
       // Store the information to player stats
-      player.setName(info[1][0]);
-      player.setTurn(Integer.parseInt(info[1][1]));
-      player.setCurrentRod(items.get(info[1][2]));
-      player.setFishingBuff(Integer.parseInt(info[1][3]));
-      player.stats.put(info[0][4], Integer.parseInt(info[1][4]));
-      player.stats.put(info[0][5], Integer.parseInt(info[1][5]));
-      player.stats.put(info[0][6], Integer.parseInt(info[1][6]));
+      player.setTurn(Integer.parseInt(info[1][0]));
+      player.setCurrentRod(items.get(info[1][1]));
+      player.setFishingBuff(Integer.parseInt(info[1][2]));
+      player.stats.put(info[0][4], Integer.parseInt(info[1][3]));
+      player.stats.put(info[0][5], Integer.parseInt(info[1][4]));
+      player.stats.put(info[0][6], Integer.parseInt(info[1][5]));
 
       scan.close();
     } catch (IOException e) {

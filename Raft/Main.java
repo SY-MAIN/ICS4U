@@ -127,13 +127,13 @@ class Main {
       File playerF = new File(saveFile + "/player.txt");
       PrintWriter writer = new PrintWriter(playerF);
       // Labels
-      writer.write("name,turn,currentRod,fishingBuff,Health,Hunger,Hydration");
+      writer.write("turn,currentRod,fishingBuff,Health,Hunger,Hydration");
 
       if (player.getCurrentRod() == null) {
-        writer.printf("%s,%d,%s,%d,%d,%d,%d", player.getName(), player.getTurn(), null, player.getFishingBuff(),
-            player.getHealth(), player.getHunger(), player.getHydration());
+        writer.printf("%d,%s,%d,%d,%d,%d\n", player.getTurn(), null, player.getFishingBuff(), player.getHealth(),
+            player.getHunger(), player.getHydration());
       } else {
-        writer.printf("%s,%d,%s,%d,%d,%d,%d", player.getName(), player.getTurn(), player.getCurrentRod().getName(),
+        writer.printf("%d,%s,%d,%d,%d,%d\n", player.getTurn(), player.getCurrentRod().getName(),
             player.getFishingBuff(), player.getHealth(), player.getHunger(), player.getHydration());
       }
 

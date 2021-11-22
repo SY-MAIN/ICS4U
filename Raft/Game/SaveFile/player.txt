@@ -1,1 +1,2 @@
-name,turn,currentRod,fishingBuff,Health,Hunger,Hydrationnull,1,null,1,100,80,85
+name,turn,currentRod,fishingBuff,Health,Hunger,Hydration
+null,1,null,1,100,80,85
