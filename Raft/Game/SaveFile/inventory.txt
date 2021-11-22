@@ -1,0 +1,5 @@
+Name,ID,quantity
+Bag of Sand,bagofsand,6
+Bag of Gravel,bagofgravel,1
+Pieces of String,string,1
+Bottle with SeaWater,bottleseawater,0

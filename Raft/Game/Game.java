@@ -509,8 +509,22 @@ public class Game {
 
       // All the items in the Crafting menu
       items.forEach((name, item) -> {
+        boolean craftable = true;
         if (item.isCraftable()) {
-          System.out.printf("* %-25s %-20s %21s\n", item.getName(), "<" + item.getID() + ">", "*");
+          for (var recipe : item.getRecipe().entrySet()) {
+            if (!player.inventory.containsKey(recipe.getKey())) {
+              craftable = false;
+            } else if (player.inventory.get(recipe.getKey()) < recipe.getValue()) {
+              craftable = false;
+            }
+          }
+          if (craftable) {
+            System.out.print(ANSI_BLUE);
+            System.out.printf("* %-25s %-20s %21s\n", item.getName(), "<" + item.getID() + ">", "*");
+            System.out.print(ANSI_RESET);
+          } else {
+            System.out.printf("* %-25s %-20s %21s\n", item.getName(), "<" + item.getID() + ">", "*");
+          }
           HashMap<Item, Integer> recipes = item.getRecipe();
 
           recipes.forEach((recipeItem, quantity) -> {
@@ -572,8 +586,17 @@ public class Game {
 
           // Take away the items to confirm the craft.
           recipes.forEach((recipeItem, quantity) -> {
-            player.inventory.replace(recipeItem, player.inventory.get(recipeItem) - quantity);
+            if (player.inventory.get(recipeItem) - quantity == 0) {
+              player.inventory.remove(recipeItem);
+            } else {
+              player.inventory.replace(recipeItem, player.inventory.get(recipeItem) - quantity);
+            }
           });
+          if (player.inventory.containsKey(item)) {
+            player.inventory.replace(item, player.inventory.get(item) + 1);
+          } else {
+            player.inventory.put(item, 1);
+          }
           wait(1000);
 
         } else {
@@ -585,6 +608,7 @@ public class Game {
         wait(1000);
       }
     }
+
   }
 
   /**
