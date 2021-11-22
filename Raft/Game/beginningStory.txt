@@ -25,7 +25,7 @@ READY! SET! FIRE!
 *BOOM* *BOOM* *BOOM* *BOOM* *BOOM*
 
 Crew:
-Captain! It's not ineffective! There are too many of them! We must escape!
+Captain! It's ineffective! There are too many of them! We must escape!
 
 *Crash!*
 *splash*

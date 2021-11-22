@@ -11,7 +11,7 @@ import java.io.IOException;
  * 
  * @author Simon Yang
  * @version 1.0
- * @since 2021-11-20
+ * @since 2021-11-21
  */
 public class Game {
 
@@ -114,6 +114,14 @@ public class Game {
       // increment the turn and deduct stats from the player to simulate time has
       // pass.
       player.nextTurn();
+
+      // Check for Player's Health
+      if (player.getHealth() == 0) {
+        System.out.println("Game Over! You have Died!");
+        player.gameOver = true;
+        wait(1000);
+        return player;
+      }
     }
   }
 
@@ -169,9 +177,9 @@ public class Game {
       player.setTurn(Integer.parseInt(info[1][0]));
       player.setCurrentRod(items.get(info[1][1]));
       player.setFishingBuff(Integer.parseInt(info[1][2]));
-      player.stats.put(info[0][4], Integer.parseInt(info[1][3]));
-      player.stats.put(info[0][5], Integer.parseInt(info[1][4]));
-      player.stats.put(info[0][6], Integer.parseInt(info[1][5]));
+      player.stats.put(info[0][3], Integer.parseInt(info[1][3]));
+      player.stats.put(info[0][4], Integer.parseInt(info[1][4]));
+      player.stats.put(info[0][5], Integer.parseInt(info[1][5]));
 
       scan.close();
     } catch (IOException e) {
@@ -334,6 +342,7 @@ public class Game {
    * 
    */
   private static void fishing() {
+    clearScreen();
     displayScreen(IdleFishing);
 
     // Generate a random number between 3-6 seconds to simulate some time has pass.
@@ -354,17 +363,18 @@ public class Game {
     System.out.println("The float is shaking continuously and water is rippling. A bit!");
     displayScreen(FishOnLine);
 
-    // Get player's input to reel in the item. Randomize the item by indexing the
-    // hashmap by a random number.
-    int randItemIndex = randomInt(0, items.size());
-    Item item = items.get("fish");
-    int counter = 0;
-
+    // Find fishable items
+    Item[] fishableItem = new Item[10];
+    int i = 0;
     for (var entry : items.entrySet()) {
-      if (counter++ == randItemIndex) {
-        item = entry.getValue();
+      if (!entry.getValue().isCraftable()) {
+        fishableItem[i++] = entry.getValue();
       }
     }
+    // Get player's input to reel in the item. Randomize the item by indexing the
+    // hashmap by a random number.
+    int randItemIndex = randomInt(0, fishableItem.length - 1);
+    Item item = fishableItem[randItemIndex];
 
     System.out.println("Enter R to reel it in");
     String inp = scan.nextLine().toUpperCase();
@@ -385,6 +395,7 @@ public class Game {
         player.inventory.put(item, (1 * player.getFishingBuff()));
       }
     } else {
+      wait(1000);
       System.out.println("You try reeling it in, but failed. It got away.");
     }
 
@@ -417,7 +428,7 @@ public class Game {
       player.inventory.forEach((key, value) -> {
         if (key != null) {
           // Format each item in the inventory
-          System.out.printf("* %-25s x%4d%37s\n", key.getName(), value, "*");
+          System.out.printf("* %-25s%-20s x%4d%17s\n", key.getName(), "<" + key.getID() + ">", value, "*");
         }
       });
 
@@ -432,7 +443,7 @@ public class Game {
       // Get inputs
       // ================================================
       // Inventory menu
-      System.out.println(setBoldText + setItalicText + "use <name>" + setPlainText + " to use a item");
+      System.out.println(setBoldText + setItalicText + "use <ID>" + setPlainText + " to use a item(use fish)");
       System.out.println(setBoldText + setItalicText + "Exit" + setPlainText + " to return to main menu");
 
       String inp = scan.nextLine().toLowerCase();
@@ -450,10 +461,16 @@ public class Game {
 
         // Check for the correct input and valid item
         if (info[0].equals("use") && items.containsKey(info[1])) {
+          Item item = items.get(info[1]);
           // Check if the item is usable.
-          if (items.get(info[1]).isUseable() && player.inventory.containsKey(items.get(info[1]))) {
+          if (items.get(info[1]).isUseable() && player.inventory.containsKey(item)) {
             // Use the item
             player.useItem(items.get(info[1]));
+
+            player.inventory.replace(item, player.inventory.get(item) - 1);
+            if (player.inventory.get(item) == 0) {
+              player.inventory.remove(item);
+            }
           } else {
             System.out.println("Item not useable");
             wait(1000);
@@ -513,7 +530,7 @@ public class Game {
       // Get inputs
       // ================================================
       // Crafting menu
-      System.out.println(setBoldText + setItalicText + "Craft <ID>" + setPlainText + " to craft a item");
+      System.out.println(setBoldText + setItalicText + "Craft <ID>" + setPlainText + " to craft a item(craft planks)");
       System.out.println(setBoldText + setItalicText + "Exit" + setPlainText + " to return to main menu");
 
       String inp = scan.nextLine().toLowerCase();
@@ -667,6 +684,3 @@ public class Game {
     System.out.flush();
   }
 }
-
-// Story Ending
-// (Win Condition)
