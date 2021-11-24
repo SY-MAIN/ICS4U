@@ -56,6 +56,15 @@ public class Game {
   private static final String setBoldText = "\033[1m";
   private static final String setItalicText = "\033[3m";
 
+  /**
+   * This constructor is called when the game loads and has save files
+   * 
+   * @param statsFile     A file that contains all the stats and information about
+   *                      the player
+   * @param inventoryFile A file that contains all the items that the player has.
+   * @return void
+   * 
+   */
   public Game(String statsFile, String inventoryFile) {
     // Initialize the game
     initItems();
@@ -63,6 +72,12 @@ public class Game {
     initInventory(inventoryFile);
   }
 
+  /**
+   * This constructor is called when the game loads and has no save files
+   * 
+   * @return void
+   * 
+   */
   public Game() {
     // Initialize the game
     initItems();
@@ -371,6 +386,7 @@ public class Game {
         fishableItem[i++] = entry.getValue();
       }
     }
+
     // Get player's input to reel in the item. Randomize the item by indexing the
     // hashmap by a random number.
     int randItemIndex = randomInt(0, fishableItem.length - 1);

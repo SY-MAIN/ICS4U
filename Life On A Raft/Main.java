@@ -163,6 +163,7 @@ class Main {
       for (var item : player.inventory.entrySet()) {
         writer.printf("%s,%s,%d\n", item.getKey().getName(), item.getKey().getID(), item.getValue());
       }
+      // Close Save file to prevent data loss.
       writer.close();
     } catch (IOException e) {
       System.err.println("Java Exception: " + e);
@@ -185,6 +186,7 @@ class Main {
             player.getFishingBuff(), player.getHealth(), player.getHunger(), player.getHydration());
       }
 
+      // Close Save file to prevent data loss.
       writer.close();
     } catch (IOException e) {
       System.err.println("Java Exception: " + e);
