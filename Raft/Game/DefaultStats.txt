@@ -1,2 +1,0 @@
-Health,Hunger,Hydration
-100,100,100
